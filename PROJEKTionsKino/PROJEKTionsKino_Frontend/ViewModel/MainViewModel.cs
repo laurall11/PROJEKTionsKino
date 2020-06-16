@@ -20,11 +20,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public int Hausnr { get; set; } = 23;
         public int PLZ { get; set; } = 1190;
 
-
-
-
-        public OracleConnection DbConnection { get; set; }
-
         //public string Vorname { get; set; }
         //public string Nachname { get; set; }
         //public string Strasse { get; set; }
@@ -45,13 +40,19 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             get => kunden;
             set { kunden = value; RaisePropertyChanged(); }
         }
+        public OracleConnection DbConnection = new OracleConnection
+        {
+            ConnectionString =
+                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
+        };
 
-        public MainViewModel()
+    public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
+                    DbConnection.Open();
                     Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
 
                     OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
@@ -74,14 +75,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             if (!IsInDesignMode)
             {
-                OpenDb();
+                
 
                 GetKunden();
+                canAdd = true;
             }
         }
 
         private void GetKunden()
         {
+            DbConnection.Open();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = DbConnection;
 
@@ -104,16 +107,5 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
         }
 
-        private bool OpenDb()
-        {
-            DbConnection = new OracleConnection
-            {
-                ConnectionString =
-                    "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
-            };
-            DbConnection.Open();
-            canAdd = true;
-            return true;
-        }
     }
 }
