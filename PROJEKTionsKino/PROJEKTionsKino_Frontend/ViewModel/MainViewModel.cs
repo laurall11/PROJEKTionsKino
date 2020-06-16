@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Linq;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
 {
@@ -31,8 +32,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public bool WantsVK { get; set; }
 
         public RelayCommand AddCustomerClickedCmd { get; set; }
-
-        public ObservableCollection<Kunde> SortedList { get; set; }
 
         private ObservableCollection<Kunde> kunden;
 
@@ -95,7 +94,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Close();
         }
 
-        private void GetKunden()
+        public void GetKunden()
         {
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand();
@@ -119,6 +118,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
 
             DbConnection.Close();
+            Kunden = new ObservableCollection<Kunde>(Kunden.OrderBy(i => i.ID));
         }
 
         private void GetFilme()
