@@ -43,7 +43,7 @@
                         <DatePicker Margin="3" Text="{Binding Geburtstag}"/>
                         <CheckBox Content="Ja, ich möchte eine Vorteilscard anlegen." Height="20" Margin="2" VerticalContentAlignment="Center" IsChecked="{Binding WantsVK}"/>
                     </StackPanel>
-                    <Button Grid.Column="2" Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30"/>
+                    <Button Grid.Column="2" Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
                     <DataGrid Grid.Row="1" Grid.ColumnSpan="3"/>
                 </Grid>
             </TabItem>

@@ -5,6 +5,7 @@ using PROJEKTionsKino_Frontend.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
 {
@@ -39,8 +40,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     OracleCommand cmd = DbConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "exec p_view_kunden";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "p_view_kunden";
+                    
                     object[] values;
                     OracleDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -48,6 +50,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                         values = new object[reader.FieldCount];
                         var row = reader.GetValues(values);
                     }
+
+                    var length = 5;
+
                 }, () => canAdd);
 
             if (!IsInDesignMode)
@@ -61,7 +66,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection = new OracleConnection
             {
                 ConnectionString =
-                    "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
+                    "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
             };
             DbConnection.Open();
             canAdd = true;
