@@ -48,8 +48,7 @@
                         <CheckBox Content="Ja, ich möchte eine Vorteilscard anlegen." Height="20" Margin="2" VerticalContentAlignment="Center" IsChecked="{Binding WantsVK}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="0,75,0,0">
-
-                        <Button Grid.Column="2" Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
+                        <Button Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
                     </StackPanel>
                     <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*"/>
                 </Grid>
