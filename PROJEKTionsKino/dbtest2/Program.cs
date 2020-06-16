@@ -14,24 +14,19 @@ namespace dbtest2
         static void Main(string[] args)
         {
             OracleConnection DbConnection = new OracleConnection();
-
-            //DbConnection.ConnectionString = "User Id=scott;Password=tiger;Data Source=oracle";
             DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;";
+            DbConnection.Open();
 
             OracleCommand cmd = DbConnection.CreateCommand();
-
-            DbConnection.Open();
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "SELECT * FROM Person";
+
             OracleDataReader reader = cmd.ExecuteReader();
-
-
+            object[] values;
             while (reader.Read())
             {
-                //var data = reader.GetFieldValue<string>(2);   spezifische column
-                object[] values = new object[reader.FieldCount];
-                var data = reader.GetValues(values);
-                Console.WriteLine(data.ToString());
+                values = new object[reader.FieldCount];
+                var row = reader.GetValues(values);
             }
         }
     }
