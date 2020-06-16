@@ -39,33 +39,33 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    using (OracleConnection DbConnection = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"))
-                    {
-                        OracleCommand cmd = new OracleCommand();
-                        cmd.Connection = DbConnection;
-
-                        cmd.CommandText = "p_view_kunde";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-                        DbConnection.Open();
-                        cmd.ExecuteNonQuery();
-
-                        OracleDataReader reader = cmd.ExecuteReader();
-                        object[] values;
-                        while (reader.Read())
-                        {
-                            values = new object[reader.FieldCount];
-                            reader.GetValues(values);
-                        }
-                        DbConnection.Close();
-                    }
 
                 }, () => canAdd);
 
             if (!IsInDesignMode)
             {
                 OpenDb();
+
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = DbConnection;
+
+                cmd.CommandText = "p_view_kunde";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();
+
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    Kunde tmp = new Kunde();
+                    tmp.ID
+                    var test = 4;
+                }
             }
         }
 
