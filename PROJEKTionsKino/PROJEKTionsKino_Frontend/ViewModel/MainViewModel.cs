@@ -39,19 +39,29 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    OracleCommand cmd = DbConnection.CreateCommand();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "p_view_kunden";
-                    
-                    object[] values;
-                    OracleDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    using (OracleConnection DbConnection = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b058;Password=dbss20;"))
                     {
-                        values = new object[reader.FieldCount];
-                        var row = reader.GetValues(values);
-                    }
 
-                    var length = 5;
+                        //DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;";
+                        OracleCommand cmd = new OracleCommand();
+                        cmd.Connection = DbConnection;
+
+                        cmd.CommandText = "counter";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                        DbConnection.Open();
+                        cmd.ExecuteNonQuery();
+
+                        OracleDataReader reader = cmd.ExecuteReader();
+                        object[] values;
+                        while (reader.Read())
+                        {
+                            values = new object[reader.FieldCount];
+                        }
+
+                        DbConnection.Close();
+                    }
 
                 }, () => canAdd);
 
