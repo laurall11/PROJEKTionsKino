@@ -33,7 +33,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             set { kunden = value; }
         }
 
-
         public MainViewModel()
         {
             AddCustomerClickedCmd = new RelayCommand(
