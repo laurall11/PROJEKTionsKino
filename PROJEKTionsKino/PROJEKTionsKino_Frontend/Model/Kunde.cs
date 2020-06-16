@@ -8,19 +8,20 @@ namespace PROJEKTionsKino_Frontend.Model
 {
     public class Kunde
     {
-        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, DateTime geburtsdatum, DateTime erstelldatum, bool isVorteilskunde)
+        public Kunde(int id, string vorname, string nachname, string straße, int hausNr, int pLZ, string ort, DateTime geburtsdatum, DateTime erstelldatum)
         {
+            ID = id;
             Vorname = vorname;
             Nachname = nachname;
             Straße = straße;
             HausNr = hausNr;
             PLZ = pLZ;
+            Ort = ort;
             Geburtsdatum = geburtsdatum;
             Erstelldatum = erstelldatum;
-            IsVorteilskunde = isVorteilskunde;
         }
 
-        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, DateTime geburtsdatum, bool isVorteilskunde)
+        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, DateTime geburtsdatum)
         {
             Vorname = vorname;
             Nachname = nachname;
@@ -29,7 +30,6 @@ namespace PROJEKTionsKino_Frontend.Model
             PLZ = pLZ;
             Geburtsdatum = geburtsdatum;
             Erstelldatum = DateTime.Now;
-            IsVorteilskunde = isVorteilskunde;
         }
 
         public int ID { get; set; }
@@ -38,6 +38,7 @@ namespace PROJEKTionsKino_Frontend.Model
         public string Straße { get; set; }
         public int HausNr { get; set; }
         public int PLZ { get; set; }
+        public string Ort { get; set; }
         public DateTime Geburtsdatum { get; set; }
         public DateTime Erstelldatum { get; set; }
         public bool IsVorteilskunde { get; set; }
