@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Collections.ObjectModel;
 using System.Data;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
@@ -20,6 +21,15 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public DateTime Geburtstag { get; set; }
         public bool WantsVK { get; set; }
 
+        private ObservableCollection<Kunde> kunden;
+
+        public ObservableCollection<Kunde> Kunden
+        {
+            get { return kunden; }
+            set { kunden = value; }
+        }
+
+
         public RelayCommand AddCustomerClickedCmd { get; set; }
 
         public MainViewModel()
@@ -27,13 +37,18 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-
+                    OracleCommand cmd = DbConnection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "exec p_create_kunde3 (vorname IN VARCHAR, nachname IN VARCHAR, strasse IN VARCHAR, hausnummer IN INT, postleitzahl IN INT, stadt IN VARCHAR, erstelldatum IN DATE, geburtstag IN DATE, kundenid OUT INT)";
                 });
 
             if (!IsInDesignMode)
             {
-                DbConnection = new OracleConnection();
-                DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;";
+                DbConnection = new OracleConnection
+                {
+                    ConnectionString =
+                        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
+                };
                 DbConnection.Open();
 
                 OracleCommand cmd = DbConnection.CreateCommand();
