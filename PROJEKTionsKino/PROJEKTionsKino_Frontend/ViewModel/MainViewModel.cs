@@ -40,7 +40,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Geburtstag, WantsVK);
+                    Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
 
                     OracleCommand addCustomerCmd = new OracleCommand();
                     addCustomerCmd.CommandText = "p_create_kunde3";
@@ -48,14 +48,15 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
                     addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
                     addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straße;
-                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = TempKunde.HausNr;
-                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = TempKunde.PLZ;
+                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
+                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
+                    addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
                     addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
                     addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
                     addCustomerCmd.Parameters.Add("kundenid", OracleDbType.Int32).Direction = ParameterDirection.Output;
 
+                    addCustomerCmd.ExecuteNonQuery();
 
-                    
                 }, () => canAdd);
 
             if (!IsInDesignMode)
