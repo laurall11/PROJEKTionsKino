@@ -72,6 +72,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
                     addCustomerCmd.ExecuteNonQuery();
 
+                    DbConnection.Close();
+
                     GetKunden();
                 }, () => canAdd);
 
@@ -110,6 +112,30 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
                 Kunden.Add(tmp);
             }
+
+            DbConnection.Close();
+        }
+
+        private void GetFilme()
+        {
+            DbConnection.Open();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = DbConnection;
+
+            cmd.CommandText = "p_view_filme";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+            cmd.ExecuteNonQuery();
+
+            OracleDataReader reader = cmd.ExecuteReader();
+            object[] values;
+            while (reader.Read())
+            {
+    
+            }
+
+            DbConnection.Close();
         }
     }
 }
