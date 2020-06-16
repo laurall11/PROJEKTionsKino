@@ -44,14 +44,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     OracleCommand addCustomerCmd = new OracleCommand();
                     addCustomerCmd.CommandText = "p_create_kunde3";
                     addCustomerCmd.CommandType = CommandType.StoredProcedure;
-                    addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2);
-                    addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2);
-                    addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2);
-                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32);
-                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32);
-                    addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Varchar2);
-                    addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Varchar2);
+                    addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
+                    addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
+                    addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straße;
+                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = TempKunde.HausNr;
+                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = TempKunde.PLZ;
+                    addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
+                    addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
                     addCustomerCmd.Parameters.Add("kundenid", OracleDbType.Int32).Direction = ParameterDirection.Output;
+
+
                     
                 }, () => canAdd);
 
