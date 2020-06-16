@@ -21,7 +21,7 @@ namespace PROJEKTionsKino_Frontend.Model
             Erstelldatum = erstelldatum;
         }
 
-        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, DateTime geburtsdatum)
+        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, string ort, DateTime geburtsdatum)
         {
             Vorname = vorname;
             Nachname = nachname;
