@@ -39,14 +39,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    using (OracleConnection DbConnection = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b058;Password=dbss20;"))
+                    using (OracleConnection DbConnection = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"))
                     {
-
-                        //DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;";
                         OracleCommand cmd = new OracleCommand();
                         cmd.Connection = DbConnection;
 
-                        cmd.CommandText = "counter";
+                        cmd.CommandText = "p_view_kunde";
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
@@ -58,8 +56,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                         while (reader.Read())
                         {
                             values = new object[reader.FieldCount];
+                            reader.GetValues(values);
                         }
-
                         DbConnection.Close();
                     }
 

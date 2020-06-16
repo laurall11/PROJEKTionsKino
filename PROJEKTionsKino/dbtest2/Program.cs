@@ -26,15 +26,19 @@ namespace dbtest2
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
+
                 DbConnection.Open();
                 cmd.ExecuteNonQuery();
-                
+
                 OracleDataReader reader = cmd.ExecuteReader();
                 object[] values;
                 while (reader.Read())
                 {
                     values = new object[reader.FieldCount];
+                    reader.GetValues(values);
                 }
+                
+                int length = 5;
             }
         }
     }
