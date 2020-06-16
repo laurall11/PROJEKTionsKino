@@ -36,6 +36,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public MainViewModel()
         {
+            Kunden = new ObservableCollection<Kunde>();
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
@@ -62,8 +63,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
-                    Kunde tmp = new Kunde();
-                    tmp.ID
+                    Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
+                    Kunden.Add(tmp);
                     var test = 4;
                 }
             }
