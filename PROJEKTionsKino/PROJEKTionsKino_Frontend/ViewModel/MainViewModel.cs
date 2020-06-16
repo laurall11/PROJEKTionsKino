@@ -29,8 +29,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public ObservableCollection<Kunde> Kunden
         {
-            get { return kunden; }
-            set { kunden = value; }
+            get => kunden;
+            set { kunden = value; RaisePropertyChanged(); }
         }
 
         public MainViewModel()
@@ -40,12 +40,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     OracleCommand cmd = DbConnection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "exec p_create_kunde3 (vorname IN VARCHAR, nachname IN VARCHAR, strasse IN VARCHAR, hausnummer IN INT, postleitzahl IN INT, stadt IN VARCHAR, erstelldatum IN DATE, geburtstag IN DATE, kundenid OUT INT)";
-                }, () => { return canAdd; });
+                    cmd.CommandText = "exec p_view_kunden";
+                }, () => canAdd);
 
             if (!IsInDesignMode)
             {
-                if (OpenDB())
+                if (OpenDb())
                 {
                     canAdd = true;
                     OracleCommand cmd = DbConnection.CreateCommand();
@@ -63,10 +63,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
         }
 
-        private bool OpenDB()
+        private bool OpenDb()
         {
-            DbConnection = new OracleConnection();
-            DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;";
+            DbConnection = new OracleConnection
+            {
+                ConnectionString =
+                    "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
+            };
             DbConnection.Open();
             return true;
         }
