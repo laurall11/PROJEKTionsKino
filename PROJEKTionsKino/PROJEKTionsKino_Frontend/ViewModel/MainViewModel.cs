@@ -42,25 +42,18 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     OracleCommand cmd = DbConnection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "exec p_view_kunden";
-                }, () => canAdd);
-
-            if (!IsInDesignMode)
-            {
-                if (OpenDb())
-                {
-                    canAdd = true;
-                    OracleCommand cmd = DbConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT * FROM Person";
-
-                    OracleDataReader reader = cmd.ExecuteReader();
                     object[] values;
+                    OracleDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
                         values = new object[reader.FieldCount];
                         var row = reader.GetValues(values);
                     }
-                }
+                }, () => canAdd);
+
+            if (!IsInDesignMode)
+            {
+                OpenDb();
             }
         }
 
@@ -72,6 +65,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
             };
             DbConnection.Open();
+            canAdd = true;
             return true;
         }
     }
