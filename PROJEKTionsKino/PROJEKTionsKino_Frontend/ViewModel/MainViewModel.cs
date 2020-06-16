@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Collections.ObjectModel;
 using System.Data;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
@@ -23,12 +24,23 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public RelayCommand AddCustomerClickedCmd { get; set; }
         public bool canAdd { get; set; } = false;
 
+        private ObservableCollection<Kunde> kunden;
+
+        public ObservableCollection<Kunde> Kunden
+        {
+            get { return kunden; }
+            set { kunden = value; }
+        }
+
+
         public MainViewModel()
         {
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-
+                    OracleCommand cmd = DbConnection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "exec p_create_kunde3 (vorname IN VARCHAR, nachname IN VARCHAR, strasse IN VARCHAR, hausnummer IN INT, postleitzahl IN INT, stadt IN VARCHAR, erstelldatum IN DATE, geburtstag IN DATE, kundenid OUT INT)";
                 }, () => { return canAdd; });
 
             if (!IsInDesignMode)
