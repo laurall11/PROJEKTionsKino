@@ -53,6 +53,10 @@
                     <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*"/>
                 </Grid>
             </TabItem>
+            <TabItem>
+                <TabItem.Header>Ticket kaufen</TabItem.Header>
+                
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
