@@ -40,20 +40,27 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
+                    DbConnection = OpenDb();
+
+
                     Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
 
-                    OracleCommand addCustomerCmd = new OracleCommand();
-                    addCustomerCmd.CommandText = "p_create_kunde3";
-                    addCustomerCmd.CommandType = CommandType.StoredProcedure;
-                    addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
-                    addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
-                    addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
-                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
-                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
-                    addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
-                    addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
-                    addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
-                    addCustomerCmd.Parameters.Add("kundenid", OracleDbType.Int32).Direction = ParameterDirection.Output;
+                    OracleCommand addCustomerCmd = new OracleCommand("p_create_sp", DbConnection);
+
+                    //addCustomerCmd.CommandType = CommandType.StoredProcedure;
+                    //addCustomerCmd.Parameters.Add(new OracleParameter("sitz_platz", OracleDbType.Int32)).Value = 333;
+
+                    //addCustomerCmd.CommandType = CommandType.StoredProcedure;
+
+                    //addCustomerCmd.Parameters.Add(new OracleParameter("vorname", OracleDbType.Varchar2)).Value = TempKunde.Vorname;
+                    //addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
+                    //addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
+                    //addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
+                    //addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
+                    //addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
+                    //addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = "2019-11-11";
+                    //addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = "2020-11-11";
+                    //addCustomerCmd.Parameters.Add("kundenid", OracleDbType.Int32).Direction = ParameterDirection.Output;
 
                     addCustomerCmd.ExecuteNonQuery();
 
@@ -83,10 +90,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     Kunden.Add(tmp);
                     var test = 4;
                 }
+                DbConnection.Close();
             }
         }
 
-        private bool OpenDb()
+        private OracleConnection OpenDb()
         {
             DbConnection = new OracleConnection
             {
@@ -95,7 +103,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             };
             DbConnection.Open();
             canAdd = true;
-            return true;
+            return DbConnection;
         }
     }
 }
