@@ -2,7 +2,6 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Collections.ObjectModel;
 using System.Data;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
@@ -21,48 +20,43 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public DateTime Geburtstag { get; set; }
         public bool WantsVK { get; set; }
 
-        private ObservableCollection<Kunde> kunden;
-
-        public ObservableCollection<Kunde> Kunden
-        {
-            get { return kunden; }
-            set { kunden = value; }
-        }
-
-
         public RelayCommand AddCustomerClickedCmd { get; set; }
+        public bool canAdd { get; set; } = false;
 
         public MainViewModel()
         {
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    OracleCommand cmd = DbConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "exec p_create_kunde3 (vorname IN VARCHAR, nachname IN VARCHAR, strasse IN VARCHAR, hausnummer IN INT, postleitzahl IN INT, stadt IN VARCHAR, erstelldatum IN DATE, geburtstag IN DATE, kundenid OUT INT)";
-                });
+
+                }, () => { return canAdd; });
 
             if (!IsInDesignMode)
             {
-                DbConnection = new OracleConnection
+                if (OpenDB())
                 {
-                    ConnectionString =
-                        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
-                };
-                DbConnection.Open();
+                    canAdd = true;
+                    OracleCommand cmd = DbConnection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM Person";
 
-                OracleCommand cmd = DbConnection.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT * FROM Person";
-
-                OracleDataReader reader = cmd.ExecuteReader();
-                object[] values;
-                while (reader.Read())
-                {
-                    values = new object[reader.FieldCount];
-                    var row = reader.GetValues(values);
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    object[] values;
+                    while (reader.Read())
+                    {
+                        values = new object[reader.FieldCount];
+                        var row = reader.GetValues(values);
+                    }
                 }
             }
+        }
+
+        private bool OpenDB()
+        {
+            DbConnection = new OracleConnection();
+            DbConnection.ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;";
+            DbConnection.Open();
+            return true;
         }
     }
 }
