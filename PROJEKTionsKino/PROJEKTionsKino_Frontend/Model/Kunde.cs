@@ -16,10 +16,23 @@ namespace PROJEKTionsKino_Frontend.Model
             HausNr = hausNr;
             PLZ = pLZ;
             Geburtsdatum = geburtsdatum;
+            Erstelldatum = erstelldatum;
+            IsVorteilskunde = isVorteilskunde;
+        }
+
+        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, DateTime geburtsdatum, bool isVorteilskunde)
+        {
+            Vorname = vorname;
+            Nachname = nachname;
+            Straße = straße;
+            HausNr = hausNr;
+            PLZ = pLZ;
+            Geburtsdatum = geburtsdatum;
             Erstelldatum = DateTime.Now;
             IsVorteilskunde = isVorteilskunde;
         }
 
+        public int ID { get; set; }
         public string Vorname { get; set; }
         public string Nachname { get; set; }
         public string Straße { get; set; }
