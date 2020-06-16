@@ -31,7 +31,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public bool WantsVK { get; set; }
 
         public RelayCommand AddCustomerClickedCmd { get; set; }
-        public bool canAdd { get; set; } = false;
+
+        public ObservableCollection<Kunde> SortedList { get; set; }
 
         private ObservableCollection<Kunde> kunden;
 
@@ -56,38 +57,42 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
-                    DbConnection.Open();
-                    Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
-
-                    OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
-                    addCustomerCmd.CommandType = CommandType.StoredProcedure;
-                    addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
-                    addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
-                    addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
-                    addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
-                    addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
-                    addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
-                    addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
-                    addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
-
-                    addCustomerCmd.ExecuteNonQuery();
-
-                    DbConnection.Close();
-
+                    AddKunde();
                     GetKunden();
-                }, () => canAdd);
+
+                });
 
             TicketKaufenBtnClickedCmd = new RelayCommand(
                 () =>
                 {
-
+                    GetFilme();
                 });
 
             if (!IsInDesignMode)
             {
                 GetKunden();
-                canAdd = true;
             }
+        }
+
+        private void AddKunde()
+        {
+            DbConnection.Open();
+            Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
+
+            OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
+            addCustomerCmd.CommandType = CommandType.StoredProcedure;
+            addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
+            addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
+            addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
+            addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
+            addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
+            addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
+            addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
+            addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
+
+            addCustomerCmd.ExecuteNonQuery();
+
+            DbConnection.Close();
         }
 
         private void GetKunden()
