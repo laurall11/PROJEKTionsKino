@@ -40,9 +40,9 @@
                         <TextBox Height="20" Margin="3" Text="{Binding Strasse}"/>
                         <TextBox Height="20" Margin="3" Text="{Binding Hausnr}"/>
                         <StackPanel Orientation="Horizontal">
-                        <TextBox Height="20" Margin="3" Text="{Binding Stadt}" Width="140"/>
+                            <TextBox Height="20" Margin="3" Text="{Binding Stadt}" Width="140"/>
                             <Label Content="PLZ:"/>
-                        <TextBox Height="20" Margin="3" Text="{Binding PLZ}" Width="140"/>
+                            <TextBox Height="20" Margin="3" Text="{Binding PLZ}" Width="140"/>
                         </StackPanel>
                         <DatePicker Margin="3" Text="{Binding Geburtstag}"/>
                         <CheckBox Content="Ja, ich möchte eine Vorteilscard anlegen." Height="20" Margin="2" VerticalContentAlignment="Center" IsChecked="{Binding WantsVK}"/>
@@ -52,6 +52,22 @@
                         <Button Grid.Column="2" Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
                     </StackPanel>
                     <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*"/>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>Ticket kaufen</TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.ColumnSpan="2"/>
+                    <Button Grid.Row="1" Content="Ticket kaufen" Background="CornflowerBlue" Foreground="White" FontSize="12pt" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="150"/>
+                    <Label Grid.Row="1" Grid.Column="1" Content="Testinhalt" FontSize="12pt" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </TabItem>
         </TabControl>
