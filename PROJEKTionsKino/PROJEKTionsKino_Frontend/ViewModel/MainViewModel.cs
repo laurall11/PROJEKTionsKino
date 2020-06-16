@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
+using PROJEKTionsKino_Frontend.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
