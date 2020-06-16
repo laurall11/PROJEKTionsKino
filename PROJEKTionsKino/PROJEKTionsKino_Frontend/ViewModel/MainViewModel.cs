@@ -14,7 +14,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         #region Ticket kaufen
         public string Notif { get; set; }
         public RelayCommand TicketKaufenBtnClickedCmd { get; set; }
-
         public ObservableCollection<Film> Filme { get; set; } 
         #endregion
 
@@ -74,8 +73,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     addCustomerCmd.ExecuteNonQuery();
 
                     GetKunden();
-
-
                 }, () => canAdd);
 
             TicketKaufenBtnClickedCmd = new RelayCommand(
@@ -86,8 +83,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             if (!IsInDesignMode)
             {
-
-
                 GetKunden();
                 canAdd = true;
             }
@@ -114,7 +109,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 reader.GetValues(values);
                 Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
                 Kunden.Add(tmp);
-                var test = 4;
             }
         }
     }
