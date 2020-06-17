@@ -83,7 +83,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
-                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
+                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi17b061;Password=dbss20;"
         };
 
         private Film _selectedFilm;
