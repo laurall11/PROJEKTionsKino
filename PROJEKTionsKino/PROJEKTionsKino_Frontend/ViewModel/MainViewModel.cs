@@ -53,6 +53,15 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public bool VorstellungSelected { get; set; }
 
+        private ObservableCollection<Sitzplatz> freieSitzplaetze;
+
+        public ObservableCollection<Sitzplatz> FreieSitzplaetze
+        {
+            get { return freieSitzplaetze; }
+            set { freieSitzplaetze = value; }
+        }
+
+
         #endregion Ticket kaufen
 
         #region Kunde anlegen
@@ -120,14 +129,17 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             DbConnection.Open();
             Vorstellung tempVorstellung = new Vorstellung(SelectedVorstellungen.Programmbeginn, SelectedVorstellungen.Programmende,
-                SelectedVorstellungen.Filmname, SelectedVorstellungen.Beschreibung, selectedVorstellung.SaalID,
-                selectedVorstellung.Sitzplatzanzahl, selectedVorstellung.VorstellungID);
+                SelectedVorstellungen.Filmname, SelectedVorstellungen.Beschreibung, SelectedVorstellungen.SaalID,
+                SelectedVorstellungen.Sitzplatzanzahl, SelectedVorstellungen.VorstellungID);
 
             OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket", DbConnection);
             buyTicketCmd.CommandType = CommandType.StoredProcedure;
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
-            //buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.
-            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVors
+            buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.VorstellungID;
+
+            CheckSeats(tempVorstellung.VorstellungID);
+
+            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
 
 //                CREATE OR REPLACE
 //PROCEDURE p_buy_ticket
@@ -140,6 +152,25 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 //        ticketID:= id;
 //            END;
 
+        }
+
+        private void CheckSeats(int VorstellungsID)
+        {
+            DbConnection.Open();
+            OracleCommand checkSeatsCmd = new OracleCommand("f_get_empty_seats", DbConnection);
+            checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
+            checkSeatsCmd.CommandType = CommandType.StoredProcedure;
+
+            checkSeatsCmd.ExecuteNonQuery();
+
+            OracleDataReader reader = checkSeatsCmd.ExecuteReader();
+            object[] values;
+            while (reader.Read())
+            {
+                //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
+                values = new object[reader.FieldCount];
+                reader.GetValues(values);
+            }
         }
 
         private void AddKunde()
