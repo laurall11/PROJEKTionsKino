@@ -46,11 +46,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             get { return selectedVorstellung; }
             set { selectedVorstellung = value;
-                vorstellungSelected = true;
+                VorstellungSelected = true;
+                TicketKaufenBtnClickedCmd.RaiseCanExecuteChanged();
             }
         }
 
-        public bool vorstellungSelected { get; set; } = false;
+        public bool VorstellungSelected { get; set; }
 
         #endregion Ticket kaufen
 
@@ -82,7 +83,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
-                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
+                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
         };
 
         private Film _selectedFilm;
@@ -105,12 +106,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     BuyTicket();
-                }, () => { return vorstellungSelected; });
+                }, () => { return VorstellungSelected; });
 
             if (!IsInDesignMode)
             {
                 GetKunden();
                 GetFilme();
+
             }
         }
 
@@ -205,12 +207,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                         (string)values[6], (string)values[7], (string)values[8]);
                     Filme.Add(tmp);
                      vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]));
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
                 else
                 {
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]));
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
             }
