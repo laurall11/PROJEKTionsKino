@@ -133,7 +133,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 GetKunden();
                 GetFilme();
-
             }
         }
 
@@ -169,9 +168,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         private void CheckSeats(int VorstellungsID)
         {
             DbConnection.Open();
-            OracleCommand checkSeatsCmd = new OracleCommand("f_get_empty_seats", DbConnection);
-            checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
-            checkSeatsCmd.Parameters.Add("s_recordset", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
+            checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
+            checkSeatsCmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
             checkSeatsCmd.CommandType = CommandType.StoredProcedure;
 
             checkSeatsCmd.ExecuteNonQuery();
