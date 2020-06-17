@@ -60,7 +60,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private ObservableCollection<Sitzplatz> freieSitzplaetze;
 
-        public ObservableCollection<Sitzplatz> FreieSitzplaetze
+        public ObservableCollection<Sitzplatz> BelegteSitzplaetzee
         {
             get { return freieSitzplaetze; }
             set { freieSitzplaetze = value; }
@@ -115,7 +115,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             Filme = new ObservableCollection<Film>();
             Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
-            FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
+            BelegteSitzplaetzee = new ObservableCollection<Sitzplatz>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -149,11 +149,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.VorstellungID;
 
-            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
+            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = 
+            buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
+            buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Int32).Value = DateTime.Now;
+            buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
+            buyTicketCmd.Parameters.Add("preis", OracleDbType.Decimal).Value = 8.50;
 
             //                CREATE OR REPLACE
             //PROCEDURE p_buy_ticket
-            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
+            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, 
+            //ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
             //AS
             //    id INT;
             //            BEGIN
@@ -165,7 +170,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void CheckSeats(int VorstellungsID)
         {
-            FreieSitzplaetze.Clear();
+            BelegteSitzplaetzee.Clear();
             DbConnection.Open();
             OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
@@ -183,7 +188,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 reader.GetValues(values);
                 Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
                     Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
-                FreieSitzplaetze.Add(TempSitzplatz);
+                BelegteSitzplaetzee.Add(TempSitzplatz);
             }
 
             DbConnection.Close();
