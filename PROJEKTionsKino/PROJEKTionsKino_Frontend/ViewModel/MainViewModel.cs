@@ -13,14 +13,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
     public class MainViewModel : ViewModelBase
     {
         #region Ticket kaufen
+
         public RelayCommand TicketKaufenBtnClickedCmd { get; set; }
         public ObservableCollection<Film> Filme { get; set; }
         public Film SelectedFilm { get; set; }
-        #endregion
 
+        #endregion Ticket kaufen
 
         #region Kunde anlegen
-        public string Vorname { get; set; } 
+
+        public string Vorname { get; set; }
         public string Nachname { get; set; }
         public string Strasse { get; set; }
         public string Stadt { get; set; }
@@ -40,7 +42,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             get => kunden;
             set { kunden = value; }
         }
-        #endregion
+
+        #endregion Kunde anlegen
 
         public OracleConnection DbConnection = new OracleConnection
         {
@@ -58,7 +61,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     AddKunde();
                     GetKunden();
-
                 });
 
             TicketKaufenBtnClickedCmd = new RelayCommand(
@@ -145,16 +147,24 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
-                //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
-                //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
-                Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]), 
-                    Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]), 
-                    Convert.ToInt32(values[12]), (string)values[2],
-                    (string)values[6], (string)values[7], (string)values[8]);
-                if (!Filme.Contains(tmp))
+                bool exists = false;
+                foreach (var film in Filme)
                 {
-                    Filme.Add(tmp);
+                    if (film.FilmID == Convert.ToInt32(values[9]))
+                    {
+                        exists = true;
+                    }
+                }
 
+                if (!exists)
+                {
+                    //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
+                    //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
+                    Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
+                        Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
+                        Convert.ToInt32(values[12]), (string)values[2],
+                        (string)values[6], (string)values[7], (string)values[8]);
+                    Filme.Add(tmp);
                 }
             }
 
