@@ -60,7 +60,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private ObservableCollection<Sitzplatz> freieSitzplaetze;
 
-        public ObservableCollection<Sitzplatz> BelegteSitzplaetzee
+        public ObservableCollection<Sitzplatz> FreieSitzplaetze
         {
             get { return freieSitzplaetze; }
             set { freieSitzplaetze = value; }
@@ -101,6 +101,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         #endregion Kunde anlegen
 
+        public ObservableCollection<Saal> Saale { get; set; }
+
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
@@ -115,7 +117,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             Filme = new ObservableCollection<Film>();
             Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
-            BelegteSitzplaetzee = new ObservableCollection<Sitzplatz>();
+            FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
+            Saale = new ObservableCollection<Saal>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -149,16 +152,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.VorstellungID;
 
-            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = 
-            buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
-            buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Int32).Value = DateTime.Now;
-            buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
-            buyTicketCmd.Parameters.Add("preis", OracleDbType.Decimal).Value = 8.50;
+            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
 
             //                CREATE OR REPLACE
             //PROCEDURE p_buy_ticket
-            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, 
-            //ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
+            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
             //AS
             //    id INT;
             //            BEGIN
@@ -170,7 +168,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void CheckSeats(int VorstellungsID)
         {
-            BelegteSitzplaetzee.Clear();
+            FreieSitzplaetze.Clear();
             DbConnection.Open();
             OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
@@ -188,7 +186,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 reader.GetValues(values);
                 Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
                     Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
-                BelegteSitzplaetzee.Add(TempSitzplatz);
+                FreieSitzplaetze.Add(TempSitzplatz);
             }
 
             DbConnection.Close();
@@ -280,6 +278,20 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                }
+
+                bool saalExists = false;
+                foreach (var saal in Saale)
+                {
+                    if (saal.SaalID == Convert.ToInt32(values[14]))
+                    {
+                        saalExists = true;
+                    }
+                }
+
+                if (!saalExists)
+                {
+                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
                 }
             }
 
