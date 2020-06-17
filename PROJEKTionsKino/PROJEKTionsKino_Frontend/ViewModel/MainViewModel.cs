@@ -154,20 +154,20 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void BuyTicket()
         {
-
-
             DbConnection.Open();
 
-            OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket", DbConnection);
+            OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket2", DbConnection);
             buyTicketCmd.CommandType = CommandType.StoredProcedure;
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
-            buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = SelectedVorstellungen.VorstellungID;
+            buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = 1;
 
             buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = SelectedSitzplatz;
             buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
-            buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Int32).Value = DateTime.Now;
             buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
-            buyTicketCmd.Parameters.Add("preis", OracleDbType.Decimal).Value = 8.50;
+            buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Date).Value = DateTime.Now;
+            buyTicketCmd.Parameters.Add("preis", OracleDbType.Decimal).Value = 7;
+
+            buyTicketCmd.ExecuteNonQuery();
 
             DbConnection.Close();
 
