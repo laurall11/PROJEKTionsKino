@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
 using PROJEKTionsKino_Frontend.Model;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
@@ -13,14 +14,37 @@ namespace PROJEKTionsKino_Frontend.ViewModel
     public class MainViewModel : ViewModelBase
     {
         #region Ticket kaufen
+
         public RelayCommand TicketKaufenBtnClickedCmd { get; set; }
         public ObservableCollection<Film> Filme { get; set; }
-        public Film SelectedFilm { get; set; }
-        #endregion
 
+        public Film SelectedFilm
+        {
+            get => _selectedFilm;
+            set
+            {
+                _selectedFilm = value;
+                Vorstellungen = vDict[SelectedFilm.FilmID];
+            }
+        }
+
+        public Dictionary<int, ObservableCollection<Vorstellung>> vDict { get; set; }
+
+
+        private ObservableCollection<Vorstellung> vorstellungen;
+
+        public ObservableCollection<Vorstellung> Vorstellungen
+        {
+            get { return vorstellungen; }
+            set { vorstellungen = value; }
+        }
+
+
+        #endregion Ticket kaufen
 
         #region Kunde anlegen
-        public string Vorname { get; set; } 
+
+        public string Vorname { get; set; }
         public string Nachname { get; set; }
         public string Strasse { get; set; }
         public string Stadt { get; set; }
@@ -40,7 +64,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             get => kunden;
             set { kunden = value; }
         }
-        #endregion
+
+        #endregion Kunde anlegen
 
         public OracleConnection DbConnection = new OracleConnection
         {
@@ -48,17 +73,19 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
         };
 
+        private Film _selectedFilm;
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
             Filme = new ObservableCollection<Film>();
+            vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
                 {
                     AddKunde();
                     GetKunden();
-
                 });
 
             TicketKaufenBtnClickedCmd = new RelayCommand(
@@ -145,14 +172,33 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
-                Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]), 
-                    Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]), 
-                    Convert.ToInt32(values[12]), (string)values[2],
-                    (string)values[6], (string)values[7], (string)values[8]);
-                if (!Filme.Contains(tmp))
+                bool exists = false;
+                foreach (var film in Filme)
                 {
-                    Filme.Add(tmp);
+                   
+                    if (film.FilmID == Convert.ToInt32(values[9]))
+                    {
+                        exists = true;
+                    }
+                }
 
+                if (!exists)
+                {
+                    //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
+                    //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
+                    Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
+                        Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
+                        Convert.ToInt32(values[12]), (string)values[2],
+                        (string)values[6], (string)values[7], (string)values[8]);
+                    Filme.Add(tmp);
+                     vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                }
+                else
+                {
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
             }
 
