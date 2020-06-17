@@ -115,6 +115,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             Filme = new ObservableCollection<Film>();
             Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
+            FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -182,8 +183,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
-                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[1]),
-                    Convert.ToInt32(values[2]), Convert.ToInt32(values[3]), Convert.ToInt32(values[4]));
+                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
+                    Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
                 FreieSitzplaetze.Add(TempSitzplatz);
             }
         }
