@@ -111,6 +111,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 GetKunden();
                 GetFilme();
+
+                var test = 3;
             }
         }
 
