@@ -61,12 +61,12 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.ColumnSpan="2" ItemsSource="{Binding Filme}"/>
+                    <DataGrid Grid.ColumnSpan="2" ItemsSource="{Binding Filme}" AutoGenerateColumns="True" ColumnWidth="*" Margin="5"/>
                     <Button Grid.Row="1" Content="Ticket kaufen" Background="CornflowerBlue" Foreground="White" FontSize="12pt" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}"/>
-                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Notif}" FontSize="12pt" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <DataGrid Grid.Column="1" Grid.Row="1" Margin="5"/>
                 </Grid>
             </TabItem>
         </TabControl>
