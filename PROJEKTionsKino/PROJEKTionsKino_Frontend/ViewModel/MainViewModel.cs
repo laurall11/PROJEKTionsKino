@@ -137,7 +137,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             object[] values;
             while (reader.Read())
             {
-    
+                values = new object[reader.FieldCount];
+                reader.GetValues(values);
             }
 
             DbConnection.Close();
