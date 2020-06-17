@@ -13,9 +13,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
     public class MainViewModel : ViewModelBase
     {
         #region Ticket kaufen
-        public string Notif { get; set; }
         public RelayCommand TicketKaufenBtnClickedCmd { get; set; }
-        public ObservableCollection<Film> Filme { get; set; } 
+        public ObservableCollection<Film> Filme { get; set; }
+        public Film SelectedFilm { get; set; }
         #endregion
 
 
@@ -42,7 +42,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         }
         #endregion
 
-
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
@@ -65,13 +64,19 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             TicketKaufenBtnClickedCmd = new RelayCommand(
                 () =>
                 {
-                    GetFilme();
+                    BuyTicket();
                 });
 
             if (!IsInDesignMode)
             {
                 GetKunden();
+                GetFilme();
             }
+        }
+
+        private void BuyTicket()
+        {
+            throw new NotImplementedException();
         }
 
         private void AddKunde()
