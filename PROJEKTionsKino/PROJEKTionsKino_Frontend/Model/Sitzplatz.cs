@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PROJEKTionsKino_Frontend.Model
 {
-    class Sitzplatz
+    public class Sitzplatz
     {
     }
 }

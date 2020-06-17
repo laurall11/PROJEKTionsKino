@@ -61,6 +61,15 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             set { freieSitzplaetze = value; }
         }
 
+        private Sitzplatz selectedSitzplatz;
+
+        public Sitzplatz SelectedSitzplatz
+        {
+            get { return selectedSitzplatz; }
+            set { selectedSitzplatz = value; }
+        }
+
+
 
         #endregion Ticket kaufen
 
@@ -157,6 +166,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         private void CheckSeats(int VorstellungsID)
         {
             DbConnection.Open();
+            Sitzplatz TempSitzplatz = new Sitzplatz();
             OracleCommand checkSeatsCmd = new OracleCommand("f_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
             checkSeatsCmd.CommandType = CommandType.StoredProcedure;
@@ -170,6 +180,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
+                FreieSitzplaetze.Add(TempSitzplatz);
             }
         }
 
