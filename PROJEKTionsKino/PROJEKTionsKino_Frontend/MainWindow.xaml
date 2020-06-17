@@ -68,7 +68,7 @@
 
                     <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Label Height="30" Content="Sitzplatz wählen:"/>
-                        <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}"/>
+                        <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}" DisplayMemberPath="Sitzplatznummer"/>
                         <Button Content="Ticket kaufen" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}"/>
                     </StackPanel>
                     <DataGrid Grid.Column="1" Grid.Row="1" Margin="5" ItemsSource="{Binding Vorstellungen}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedVorstellungen}" />
