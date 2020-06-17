@@ -101,6 +101,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         #endregion Kunde anlegen
 
+        public ObservableCollection<Saal> Saale { get; set; }
+
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
@@ -116,6 +118,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
             FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
+            Saale = new ObservableCollection<Saal>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -275,6 +278,20 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                }
+
+                bool saalExists = false;
+                foreach (var saal in Saale)
+                {
+                    if (saal.SaalID == Convert.ToInt32(values[14]))
+                    {
+                        saalExists = true;
+                    }
+                }
+
+                if (!saalExists)
+                {
+                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
                 }
             }
 
