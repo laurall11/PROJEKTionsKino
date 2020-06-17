@@ -8,6 +8,21 @@ namespace PROJEKTionsKino_Frontend.Model
 {
     public class Film
     {
+        public Film(int filmID, int dauer, int altersfreigabe, int erscheinungsjahr, int ratinganzahl, 
+            int ratingsterne, string filmname, string beschreibung, string genre, string regie)
+        {
+            FilmID = filmID;
+            Dauer = dauer;
+            Altersfreigabe = altersfreigabe;
+            Erscheinungsjahr = erscheinungsjahr;
+            Ratinganzahl = ratinganzahl;
+            Ratingsterne = ratingsterne;
+            Filmname = filmname;
+            Beschreibung = beschreibung;
+            Genre = genre;
+            Regie = regie;
+        }
+
         public int FilmID { get; set; }
         public int Dauer { get; set; }
         public int Altersfreigabe { get; set; }
