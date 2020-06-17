@@ -74,6 +74,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             set { freieSitzplaetze = value; }
         }
 
+        public ObservableCollection<int> FreieSitzplatzID { get; set; }
+
 
         private int selectedSitzplatz;
 
@@ -128,6 +130,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
             BelegteSitzplaetze = new ObservableCollection<Sitzplatz>();
             Saale = new ObservableCollection<Saal>();
+            FreieSitzplatzID = new ObservableCollection<int>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -151,33 +154,33 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void BuyTicket()
         {
-            int aktuellerSitzplatz = 0;
+            //int aktuellerSitzplatz = 0;
 
-            foreach (var saal in Saale)
-            {
-                if(SelectedVorstellungen.SaalID == saal.SaalID)
-                {
-                    foreach (var sitzplatz in saal.SitzplatzIDs)
-                    {
-                        bool exists = false;
-                        foreach(var belegterSitzplatz in BelegteSitzplaetze)
-                        {
-                            if(sitzplatz == belegterSitzplatz.SitzplatzID)
-                            {
-                                exists = true;
-                            } 
-                        }
+            //foreach (var saal in Saale)
+            //{
+            //    if(SelectedVorstellungen.SaalID == saal.SaalID)
+            //    {
+            //        foreach (var sitzplatz in saal.SitzplatzIDs)
+            //        {
+            //            bool exists = false;
+            //            foreach(var belegterSitzplatz in BelegteSitzplaetze)
+            //            {
+            //                if(sitzplatz == belegterSitzplatz.SitzplatzID)
+            //                {
+            //                    exists = true;
+            //                } 
+            //            }
 
-                        if (!exists)
-                        {
-                            aktuellerSitzplatz = sitzplatz;
-                            break;
-                        }
-                    }
+            //            if (!exists)
+            //            {
+            //                aktuellerSitzplatz = sitzplatz;
+            //                break;
+            //            }
+            //        }
 
-                    FreieSitzplaetze = saal.SitzplatzIDs;
-                }
-            }
+            //        //FreieSitzplaetze = saal.SitzplatzIDs;
+            //    }
+            //}
 
             DbConnection.Open();
 
@@ -186,7 +189,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = SelectedVorstellungen.VorstellungID;
 
-            buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = aktuellerSitzplatz;
+            buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = SelectedSitzplatz;
             buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
             buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Int32).Value = DateTime.Now;
             buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
@@ -234,6 +237,29 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
 
             DbConnection.Close();
+
+            foreach (var saal in Saale)
+            {
+                if (saal.SaalID == SelectedVorstellungen.SaalID)
+                {
+                    foreach (var sitzplatz in saal.SitzplatzIDs)
+                    {
+                        bool exists = false;
+                        foreach (var belegterSitzplatz in BelegteSitzplaetze)
+                        {
+                            if (sitzplatz == belegterSitzplatz.SitzplatzID)
+                            {
+                                exists = true;
+                            }
+                        }
+
+                        if (!exists)
+                        {
+                            FreieSitzplatzID.Add(sitzplatz);
+                        }
+                    }
+                }
+            }
         }
 
         private void AddKunde()
