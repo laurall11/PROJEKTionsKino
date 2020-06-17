@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Oracle.ManagedDataAccess.Client;
 using PROJEKTionsKino_Frontend.Model;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
@@ -16,7 +17,28 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public RelayCommand TicketKaufenBtnClickedCmd { get; set; }
         public ObservableCollection<Film> Filme { get; set; }
-        public Film SelectedFilm { get; set; }
+
+        public Film SelectedFilm
+        {
+            get => _selectedFilm;
+            set
+            {
+                _selectedFilm = value;
+                Vorstellungen = vDict[SelectedFilm.FilmID];
+            }
+        }
+
+        public Dictionary<int, ObservableCollection<Vorstellung>> vDict { get; set; }
+
+
+        private ObservableCollection<Vorstellung> vorstellungen;
+
+        public ObservableCollection<Vorstellung> Vorstellungen
+        {
+            get { return vorstellungen; }
+            set { vorstellungen = value; }
+        }
+
 
         #endregion Ticket kaufen
 
@@ -51,10 +73,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b055;Password=dbss20;"
         };
 
+        private Film _selectedFilm;
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
             Filme = new ObservableCollection<Film>();
+            vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -150,6 +175,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 bool exists = false;
                 foreach (var film in Filme)
                 {
+                   
                     if (film.FilmID == Convert.ToInt32(values[9]))
                     {
                         exists = true;
@@ -165,6 +191,14 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                         Convert.ToInt32(values[12]), (string)values[2],
                         (string)values[6], (string)values[7], (string)values[8]);
                     Filme.Add(tmp);
+                     vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                }
+                else
+                {
+                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[14]));
+                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
             }
 
