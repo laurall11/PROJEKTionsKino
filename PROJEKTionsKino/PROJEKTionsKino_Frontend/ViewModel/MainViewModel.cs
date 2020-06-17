@@ -31,7 +31,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public Dictionary<int, ObservableCollection<Vorstellung>> vDict { get; set; }
 
-
         private ObservableCollection<Vorstellung> vorstellungen;
 
         public ObservableCollection<Vorstellung> Vorstellungen
@@ -49,7 +48,10 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 selectedVorstellung = value;
                 VorstellungSelected = true;
-                CheckSeats(value.VorstellungID);
+                if (value != null)
+                {
+                    CheckSeats(value.VorstellungID);
+                }
                 TicketKaufenBtnClickedCmd.RaiseCanExecuteChanged();
             }
         }
@@ -71,8 +73,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             get { return selectedSitzplatz; }
             set { selectedSitzplatz = value; }
         }
-
-
 
         #endregion Ticket kaufen
 
@@ -149,8 +149,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.VorstellungID;
 
-         
-
             //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
 
             //                CREATE OR REPLACE
@@ -163,11 +161,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             //            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
             //        ticketID:= id;
             //            END;
-
         }
 
         private void CheckSeats(int VorstellungsID)
         {
+            FreieSitzplaetze.Clear();
             DbConnection.Open();
             OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
@@ -187,6 +185,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
                 FreieSitzplaetze.Add(TempSitzplatz);
             }
+
+            DbConnection.Close();
         }
 
         private void AddKunde()
@@ -252,7 +252,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 bool exists = false;
                 foreach (var film in Filme)
                 {
-
                     if (film.FilmID == Convert.ToInt32(values[9]))
                     {
                         exists = true;
