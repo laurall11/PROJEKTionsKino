@@ -40,6 +40,17 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             set { vorstellungen = value; }
         }
 
+        private Vorstellung selectedVorstellung;
+
+        public Vorstellung SelectedVorstellungen
+        {
+            get { return selectedVorstellung; }
+            set { selectedVorstellung = value;
+                vorstellungSelected = true;
+            }
+        }
+
+        public bool vorstellungSelected { get; set; } = false;
 
         #endregion Ticket kaufen
 
@@ -94,7 +105,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     BuyTicket();
-                });
+                }, () => { return vorstellungSelected; });
 
             if (!IsInDesignMode)
             {
