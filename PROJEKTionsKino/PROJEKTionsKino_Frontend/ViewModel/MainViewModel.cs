@@ -53,12 +53,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public bool VorstellungSelected { get; set; }
 
-        private ObservableCollection<Sitzplatz> myVar;
+        private ObservableCollection<Sitzplatz> freieSitzplaetze;
 
-        public ObservableCollection<Sitzplatz> MyProperty
+        public ObservableCollection<Sitzplatz> FreieSitzplaetze
         {
-            get { return myVar; }
-            set { myVar = value; }
+            get { return freieSitzplaetze; }
+            set { freieSitzplaetze = value; }
         }
 
 
