@@ -79,6 +79,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             Kunden = new ObservableCollection<Kunde>();
             Filme = new ObservableCollection<Film>();
+            Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
 
             AddCustomerClickedCmd = new RelayCommand(
@@ -98,6 +99,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 GetKunden();
                 GetFilme();
+
+                var test = 3;
             }
         }
 
