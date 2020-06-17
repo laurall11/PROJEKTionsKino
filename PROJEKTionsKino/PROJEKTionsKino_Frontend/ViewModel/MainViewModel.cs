@@ -118,7 +118,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void BuyTicket()
         {
-            throw new NotImplementedException();
+            DbConnection.Open();
+            OracleCommand buyTicketCmd = new OracleCommand();
+
         }
 
         private void AddKunde()
@@ -145,10 +147,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public void GetKunden()
         {
             DbConnection.Open();
-            OracleCommand cmd = new OracleCommand();
-            cmd.Connection = DbConnection;
-
-            cmd.CommandText = "p_view_kunde";
+            OracleCommand cmd = new OracleCommand("p_view_kunde", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
@@ -172,10 +171,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         private void GetFilme()
         {
             DbConnection.Open();
-            OracleCommand cmd = new OracleCommand();
-            cmd.Connection = DbConnection;
-
-            cmd.CommandText = "p_view_programmdetails";
+            OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
