@@ -145,8 +145,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
-                //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
-                //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
                 Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]), 
                     Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]), 
                     Convert.ToInt32(values[12]), (string)values[2],
