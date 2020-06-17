@@ -45,8 +45,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public Vorstellung SelectedVorstellungen
         {
             get { return selectedVorstellung; }
-            set { selectedVorstellung = value;
+            set
+            {
+                selectedVorstellung = value;
                 VorstellungSelected = true;
+                CheckSeats(value.VorstellungID);
                 TicketKaufenBtnClickedCmd.RaiseCanExecuteChanged();
             }
         }
@@ -101,7 +104,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public OracleConnection DbConnection = new OracleConnection
         {
             ConnectionString =
-                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi17b061;Password=dbss20;"
+                "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=infdb.technikum-wien.at)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=O10)));User Id=s20bwi4_wi18b092;Password=dbss20;"
         };
 
         private Film _selectedFilm;
@@ -146,29 +149,29 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.VorstellungID;
 
-            CheckSeats(tempVorstellung.VorstellungID);
+         
 
             //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
 
-//                CREATE OR REPLACE
-//PROCEDURE p_buy_ticket
-//(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
-//AS
-//    id INT;
-//            BEGIN
-//                SELECT max(ticketid) + 1 INTO id FROM ticket;
-//            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
-//        ticketID:= id;
-//            END;
+            //                CREATE OR REPLACE
+            //PROCEDURE p_buy_ticket
+            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
+            //AS
+            //    id INT;
+            //            BEGIN
+            //                SELECT max(ticketid) + 1 INTO id FROM ticket;
+            //            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
+            //        ticketID:= id;
+            //            END;
 
         }
 
         private void CheckSeats(int VorstellungsID)
         {
             DbConnection.Open();
-            Sitzplatz TempSitzplatz = new Sitzplatz();
             OracleCommand checkSeatsCmd = new OracleCommand("f_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
+            checkSeatsCmd.Parameters.Add("s_recordset", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
             checkSeatsCmd.CommandType = CommandType.StoredProcedure;
 
             checkSeatsCmd.ExecuteNonQuery();
@@ -180,6 +183,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
+                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[1]),
+                    Convert.ToInt32(values[2]), Convert.ToInt32(values[3]), Convert.ToInt32(values[4]));
                 FreieSitzplaetze.Add(TempSitzplatz);
             }
         }
@@ -247,7 +252,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 bool exists = false;
                 foreach (var film in Filme)
                 {
-                   
+
                     if (film.FilmID == Convert.ToInt32(values[9]))
                     {
                         exists = true;
@@ -263,7 +268,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                         Convert.ToInt32(values[12]), (string)values[2],
                         (string)values[6], (string)values[7], (string)values[8]);
                     Filme.Add(tmp);
-                     vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
+                    vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
                     Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
