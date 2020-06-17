@@ -25,6 +25,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 _selectedFilm = value;
                 Vorstellungen = vDict[SelectedFilm.FilmID];
+                RaisePropertyChanged("Vorstellungen");
             }
         }
 
