@@ -86,6 +86,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\Film.cs" />
     <Compile Include="Model\Kunde.cs" />
+    <Compile Include="Model\Saal.cs" />
     <Compile Include="Model\Sitzplatz.cs" />
     <Compile Include="Model\Vorstellung.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
