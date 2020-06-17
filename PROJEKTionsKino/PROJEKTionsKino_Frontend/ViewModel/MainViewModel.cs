@@ -146,7 +146,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]), 
                     Convert.ToInt32(values[12]), (string)values[2],
                     (string)values[6], (string)values[7], (string)values[8]);
-                Filme.Add(tmp);
+                if (!Filme.Contains(tmp))
+                {
+                    Filme.Add(tmp);
+
+                }
             }
 
             DbConnection.Close();
