@@ -121,7 +121,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Open();
             Vorstellung tempVorstellung = new Vorstellung(SelectedVorstellungen.Programmbeginn, SelectedVorstellungen.Programmende,
                 SelectedVorstellungen.Filmname, SelectedVorstellungen.Beschreibung, selectedVorstellung.SaalID,
-                selectedVorstellung.Sitzplatzanzahl);
+                selectedVorstellung.Sitzplatzanzahl, selectedVorstellung.VorstellungID);
 
             OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket", DbConnection);
             buyTicketCmd.CommandType = CommandType.StoredProcedure;
