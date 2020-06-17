@@ -16,8 +16,9 @@ namespace PROJEKTionsKino_Frontend.Model
         public string Beschreibung { get; set; }
         public int SaalID { get; set; }
         public int Sitzplatzanzahl { get; set; }
+        public int VorstellungID { get; set; }
 
-        public Vorstellung(DateTime programmbeginn, DateTime programmende, string filmname, string beschreibung, int saalId, int sitzplatzanzahl)
+        public Vorstellung(DateTime programmbeginn, DateTime programmende, string filmname, string beschreibung, int saalId, int sitzplatzanzahl, int vorstellungID)
         {
             Programmbeginn = programmbeginn;
             Programmende = programmende;
@@ -25,6 +26,7 @@ namespace PROJEKTionsKino_Frontend.Model
             Beschreibung = beschreibung;
             SaalID = saalId;
             Sitzplatzanzahl = sitzplatzanzahl;
+            VorstellungID = vorstellungID;
         }
 
 
