@@ -154,33 +154,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void BuyTicket()
         {
-            //int aktuellerSitzplatz = 0;
 
-            //foreach (var saal in Saale)
-            //{
-            //    if(SelectedVorstellungen.SaalID == saal.SaalID)
-            //    {
-            //        foreach (var sitzplatz in saal.SitzplatzIDs)
-            //        {
-            //            bool exists = false;
-            //            foreach(var belegterSitzplatz in BelegteSitzplaetze)
-            //            {
-            //                if(sitzplatz == belegterSitzplatz.SitzplatzID)
-            //                {
-            //                    exists = true;
-            //                } 
-            //            }
-
-            //            if (!exists)
-            //            {
-            //                aktuellerSitzplatz = sitzplatz;
-            //                break;
-            //            }
-            //        }
-
-            //        //FreieSitzplaetze = saal.SitzplatzIDs;
-            //    }
-            //}
 
             DbConnection.Open();
 
@@ -216,6 +190,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         private void CheckSeats(int VorstellungsID)
         {
             BelegteSitzplaetze.Clear();
+            FreieSitzplatzID.Clear();
             DbConnection.Open();
             OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
             checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
