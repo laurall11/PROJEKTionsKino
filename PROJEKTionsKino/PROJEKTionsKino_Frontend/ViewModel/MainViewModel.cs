@@ -119,7 +119,26 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         private void BuyTicket()
         {
             DbConnection.Open();
-            OracleCommand buyTicketCmd = new OracleCommand();
+            Vorstellung tempVorstellung = new Vorstellung(SelectedVorstellungen.Programmbeginn, SelectedVorstellungen.Programmende,
+                SelectedVorstellungen.Filmname, SelectedVorstellungen.Beschreibung, selectedVorstellung.SaalID,
+                selectedVorstellung.Sitzplatzanzahl);
+
+            OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket", DbConnection);
+            buyTicketCmd.CommandType = CommandType.StoredProcedure;
+            buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
+            //buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = tempVorstellung.
+            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVors
+
+//                CREATE OR REPLACE
+//PROCEDURE p_buy_ticket
+//(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
+//AS
+//    id INT;
+//            BEGIN
+//                SELECT max(ticketid) + 1 INTO id FROM ticket;
+//            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
+//        ticketID:= id;
+//            END;
 
         }
 
