@@ -18,6 +18,10 @@ namespace PROJEKTionsKino_Frontend.Model
             SaalID = saalid;
             Sitzplatzanzahl = sitzplatzanzahl;
             SitzplatzIDs = new ObservableCollection<int>();
+            for (int i = 0; i < Sitzplatzanzahl; i++)
+            {
+                SitzplatzIDs.Add(i+1);
+            }
         }
     }
 }
