@@ -58,14 +58,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public bool VorstellungSelected { get; set; }
 
-        private ObservableCollection<Sitzplatz> belegteSitzplaetze;
-
-        public ObservableCollection<Sitzplatz> BelegteSitzplaetze
-        {
-            get { return belegteSitzplaetze; }
-            set { belegteSitzplaetze = value; }
-        }
-
         private ObservableCollection<Sitzplatz> freieSitzplaetze;
 
         public ObservableCollection<Sitzplatz> FreieSitzplaetze
@@ -73,8 +65,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             get { return freieSitzplaetze; }
             set { freieSitzplaetze = value; }
         }
-
-        public ObservableCollection<int> FreieSitzplatzID { get; set; }
 
 
         private int selectedSitzplatz;
@@ -128,9 +118,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             Filme = new ObservableCollection<Film>();
             Vorstellungen = new ObservableCollection<Vorstellung>();
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
-            BelegteSitzplaetze = new ObservableCollection<Sitzplatz>();
+            FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
             Saale = new ObservableCollection<Saal>();
-            FreieSitzplatzID = new ObservableCollection<int>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -189,11 +178,10 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void CheckSeats(int VorstellungsID)
         {
-            BelegteSitzplaetze.Clear();
-            FreieSitzplatzID.Clear();
+            FreieSitzplaetze.Clear();
             DbConnection.Open();
-            OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
-            checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
+            OracleCommand checkSeatsCmd = new OracleCommand("p_freie_plaetze", DbConnection);
+            checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
             checkSeatsCmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
             checkSeatsCmd.CommandType = CommandType.StoredProcedure;
 
@@ -203,15 +191,40 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             object[] values;
             while (reader.Read())
             {
-                //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
+                //sitzplatzid INT, sitzplatznummer INT, reihe INT, saalid Int, sitzplatzkategorieid INT
                 values = new object[reader.FieldCount];
                 reader.GetValues(values);
-                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
-                    Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
-                BelegteSitzplaetze.Add(TempSitzplatz);
+                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[3]), 
+                    Convert.ToInt32(values[1]), Convert.ToInt32(values[2]));
+                FreieSitzplaetze.Add(TempSitzplatz);
             }
 
             DbConnection.Close();
+
+
+            //BelegteSitzplaetze.Clear();
+            //FreieSitzplatzID.Clear();
+            //DbConnection.Open();
+            //OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
+            //checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
+            //checkSeatsCmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            //checkSeatsCmd.CommandType = CommandType.StoredProcedure;
+
+            //checkSeatsCmd.ExecuteNonQuery();
+
+            //OracleDataReader reader = checkSeatsCmd.ExecuteReader();
+            //object[] values;
+            //while (reader.Read())
+            //{
+            //    //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
+            //    values = new object[reader.FieldCount];
+            //    reader.GetValues(values);
+            //    Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
+            //        Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
+            //    BelegteSitzplaetze.Add(TempSitzplatz);
+            //}
+
+            //DbConnection.Close();
 
             //foreach (var saal in Saale)
             //{
