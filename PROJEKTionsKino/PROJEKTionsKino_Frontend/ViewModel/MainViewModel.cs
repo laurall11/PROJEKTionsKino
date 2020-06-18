@@ -213,28 +213,28 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             DbConnection.Close();
 
-            foreach (var saal in Saale)
-            {
-                if (saal.SaalID == SelectedVorstellungen.SaalID)
-                {
-                    foreach (var sitzplatz in saal.SitzplatzIDs)
-                    {
-                        bool exists = false;
-                        foreach (var belegterSitzplatz in BelegteSitzplaetze)
-                        {
-                            if (sitzplatz == belegterSitzplatz.SitzplatzID)
-                            {
-                                exists = true;
-                            }
-                        }
+            //foreach (var saal in Saale)
+            //{
+            //    if (saal.SaalID == SelectedVorstellungen.SaalID)
+            //    {
+            //        foreach (var sitzplatz in saal.SitzplatzIDs)
+            //        {
+            //            bool exists = false;
+            //            foreach (var belegterSitzplatz in BelegteSitzplaetze)
+            //            {
+            //                if (sitzplatz == belegterSitzplatz.SitzplatzID)
+            //                {
+            //                    exists = true;
+            //                }
+            //            }
 
-                        if (!exists)
-                        {
-                            FreieSitzplatzID.Add(sitzplatz);
-                        }
-                    }
-                }
-            }
+            //            if (!exists)
+            //            {
+            //                FreieSitzplatzID.Add(sitzplatz);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private void AddKunde()
@@ -325,19 +325,19 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
 
-                //bool saalExists = false;
-                //foreach (var saal in Saale)
-                //{
-                //    if (saal.SaalID == Convert.ToInt32(values[14]))
-                //    {
-                //        saalExists = true;
-                //    }
-                //}
+                bool saalExists = false;
+                foreach (var saal in Saale)
+                {
+                    if (saal.SaalID == Convert.ToInt32(values[14]))
+                    {
+                        saalExists = true;
+                    }
+                }
 
-                //if (!saalExists)
-                //{
-                //    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
-                //}
+                if (!saalExists)
+                {
+                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
+                }
             }
 
             DbConnection.Close();
