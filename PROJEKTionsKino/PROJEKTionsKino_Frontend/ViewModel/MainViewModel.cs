@@ -161,19 +161,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Close();
 
             CheckSeats(SelectedVorstellungen.VorstellungID);
-
-            //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
-
-//            CREATE OR REPLACE
-//PROCEDURE p_buy_ticket
-//(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
-//            AS
-//                id INT;
-//            BEGIN
-//                SELECT max(ticketid) + 1 INTO id FROM ticket;
-//            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
-//            ticketID:= id;
-//            END;
         }
 
         private void CheckSeats(int VorstellungsID)
@@ -200,60 +187,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
 
             DbConnection.Close();
-
-
-            //BelegteSitzplaetze.Clear();
-            //FreieSitzplatzID.Clear();
-            //DbConnection.Open();
-            //OracleCommand checkSeatsCmd = new OracleCommand("p_get_empty_seats", DbConnection);
-            //checkSeatsCmd.Parameters.Add("vorstellungs_id", OracleDbType.Int32).Value = VorstellungsID;
-            //checkSeatsCmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-            //checkSeatsCmd.CommandType = CommandType.StoredProcedure;
-
-            //checkSeatsCmd.ExecuteNonQuery();
-
-            //OracleDataReader reader = checkSeatsCmd.ExecuteReader();
-            //object[] values;
-            //while (reader.Read())
-            //{
-            //    //sitzplatzid INT, sitzplatzkategorieid INT, saalid INT, sitzplatznr INT, reihe int
-            //    values = new object[reader.FieldCount];
-            //    reader.GetValues(values);
-            //    Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]),
-            //        Convert.ToInt32(values[1]), Convert.ToInt32(values[2]), Convert.ToInt32(values[3]));
-            //    BelegteSitzplaetze.Add(TempSitzplatz);
-            //}
-
-            //DbConnection.Close();
-
-            //foreach (var saal in Saale)
-            //{
-            //    if (saal.SaalID == SelectedVorstellungen.SaalID)
-            //    {
-            //        foreach (var sitzplatz in saal.SitzplatzIDs)
-            //        {
-            //            bool exists = false;
-            //            foreach (var belegterSitzplatz in BelegteSitzplaetze)
-            //            {
-            //                if (sitzplatz == belegterSitzplatz.SitzplatzID)
-            //                {
-            //                    exists = true;
-            //                }
-            //            }
-
-            //            if (!exists)
-            //            {
-            //                FreieSitzplatzID.Add(sitzplatz);
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         private void AddKunde()
         {
             DbConnection.Open();
-            Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag, WantsVK);
+            Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag);
 
             OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
             addCustomerCmd.CommandType = CommandType.StoredProcedure;
