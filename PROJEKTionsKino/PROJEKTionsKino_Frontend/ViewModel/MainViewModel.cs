@@ -175,16 +175,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             //buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = tempVorstellung.si
 
-            //                CREATE OR REPLACE
-            //PROCEDURE p_buy_ticket
-            //(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
-            //AS
-            //    id INT;
-            //            BEGIN
-            //                SELECT max(ticketid) + 1 INTO id FROM ticket;
-            //            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
-            //        ticketID:= id;
-            //            END;
+//            CREATE OR REPLACE
+//PROCEDURE p_buy_ticket
+//(ticketID OUT INT, vorstellungsID IN INT, sitzplatzID IN INT, vorteilskartenID IN INT, ticketkategorie IN VARCHAR, ausstellungszeit IN TIMESTAMP, preis IN DECIMAL)
+//            AS
+//                id INT;
+//            BEGIN
+//                SELECT max(ticketid) + 1 INTO id FROM ticket;
+//            INSERT INTO ticket(ticketid, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis) VALUES(id, vorstellungsid, sitzplatzid, vorteilskartenid, ticketkategorie, ausstellungszeit, preis);
+//            ticketID:= id;
+//            END;
         }
 
         private void CheckSeats(int VorstellungsID)
@@ -325,19 +325,19 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     vDict[Convert.ToInt32(values[9])].Add(tmp2);
                 }
 
-                bool saalExists = false;
-                foreach (var saal in Saale)
-                {
-                    if (saal.SaalID == Convert.ToInt32(values[14]))
-                    {
-                        saalExists = true;
-                    }
-                }
+                //bool saalExists = false;
+                //foreach (var saal in Saale)
+                //{
+                //    if (saal.SaalID == Convert.ToInt32(values[14]))
+                //    {
+                //        saalExists = true;
+                //    }
+                //}
 
-                if (!saalExists)
-                {
-                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
-                }
+                //if (!saalExists)
+                //{
+                //    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
+                //}
             }
 
             DbConnection.Close();
