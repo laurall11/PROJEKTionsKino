@@ -207,8 +207,10 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             addCustomerCmd.ExecuteNonQuery();
 
+
             DbConnection.Close();
         }
+
 
         public void GetKunden()
         {
