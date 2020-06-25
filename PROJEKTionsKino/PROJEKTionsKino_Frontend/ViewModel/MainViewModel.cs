@@ -120,6 +120,16 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public ObservableCollection<Lebensmittel> Lebensmittels { get; set; }
 
+        private Lebensmittel selectedLebensmittel;
+
+        public Lebensmittel SelectedLebensmittel
+        {
+            get { return selectedLebensmittel; }
+            set { selectedLebensmittel = value; }
+        }
+
+        public RelayCommand UpdatePreisClickedCmd { get; set; }
+
         #endregion
 
         public MainViewModel()
@@ -144,6 +154,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     BuyTicket();
                 }, () => { return VorstellungSelected; });
+
+            UpdatePreisClickedCmd = new RelayCommand(
+                () =>
+                {
+                    UpdatePrice();
+                }, () => { return SelectedLebensmittel == null;  });
 
             if (!IsInDesignMode)
             {
@@ -254,8 +270,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
             updatePriceCmd.CommandType = CommandType.StoredProcedure;
-            updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = LebensmittelID;
-            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = NewPrice;
+            updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
+            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = SelectedLebensmittel.Preis;
 
             updatePriceCmd.ExecuteNonQuery();
 

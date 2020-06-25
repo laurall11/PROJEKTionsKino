@@ -81,7 +81,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittels}" AutoGenerateColumns="False" ColumnWidth="*"/>
+                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittels}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedLebensmittel}"/>
                         <DataGrid Margin="5" Height="180"/>
                     </StackPanel>
 
