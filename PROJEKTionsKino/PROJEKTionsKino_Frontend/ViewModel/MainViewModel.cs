@@ -118,6 +118,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public decimal NewPrice { get; set; }
         public int LebensmittelID { get; set; }
 
+        public ObservableCollection<Lebensmittel> Lebensmittels { get; set; }
+
         #endregion
 
         public MainViewModel()
@@ -128,6 +130,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
             FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
             Saale = new ObservableCollection<Saal>();
+            Lebensmittels = new ObservableCollection<Lebensmittel>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -146,6 +149,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 GetKunden();
                 GetFilme();
+                ViewLebensmittel();
             }
         }
 
@@ -214,6 +218,32 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
 
             addCustomerCmd.ExecuteNonQuery();
+
+            DbConnection.Close();
+        }
+
+        public void ViewLebensmittel()
+        {
+            Lebensmittels.Clear();
+
+            DbConnection.Open();
+            OracleCommand cmd = new OracleCommand("p_view_lebensmittel", DbConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+            cmd.ExecuteNonQuery();
+
+            OracleDataReader reader = cmd.ExecuteReader();
+            object[] values;
+            while (reader.Read())
+            {
+                //LebensmittelID INT, Name string, kategorie string, price decimal
+                values = new object[reader.FieldCount];
+                reader.GetValues(values);
+                Lebensmittel TempLebensmittel = new Lebensmittel(Convert.ToInt32(values[0]), 
+                    (string)values[1], (string)values[2], Convert.ToDecimal(values[3]));
+                Lebensmittels.Add(TempLebensmittel);
+            }
 
             DbConnection.Close();
         }

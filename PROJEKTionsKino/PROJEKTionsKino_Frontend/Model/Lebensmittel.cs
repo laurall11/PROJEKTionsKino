@@ -8,7 +8,7 @@ namespace PROJEKTionsKino_Frontend.Model
 {
     public class Lebensmittel
     {
-        public Lebensmittel(int lebensmittelID, string name, decimal preis, string kategorie)
+        public Lebensmittel(int lebensmittelID, string name, string kategorie, decimal preis)
         {
             LebensmittelID = lebensmittelID;
             Name = name;
