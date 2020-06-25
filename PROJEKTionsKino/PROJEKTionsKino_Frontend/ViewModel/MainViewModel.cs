@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Linq;
+using System.Windows;
 
 namespace PROJEKTionsKino_Frontend.ViewModel
 {
@@ -176,7 +177,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     UpdatePrice();
 
-                }, () => { return (SelectedLebensmittel != null) ;
+                }, () =>
+                {
+                    return (SelectedLebensmittel != null);
                 });
 
             GutscheinValidierenClickedCmd = new RelayCommand(
@@ -191,8 +194,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     GutscheinErstellen();
 
-                }, () => {
-                    return (GutscheinBetrag > 0);
                 });
 
             if (!IsInDesignMode)
@@ -205,170 +206,228 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void GutscheinErstellen()
         {
-            DbConnection.Open();
-            //INT ID INT BETRAG 8 Stellen
-            OracleCommand createGutscheinCmd = new OracleCommand("p_gutschein", DbConnection);
-            createGutscheinCmd.CommandType = CommandType.StoredProcedure;
-            createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = rando.Next(10000000, 99999999);
-            createGutscheinCmd.Parameters.Add("i_betrag_in", OracleDbType.Int32).Value = GutscheinBetrag;
+            try
+            {
+                DbConnection.Open();
+                //INT ID INT BETRAG 8 Stellen
+                OracleCommand createGutscheinCmd = new OracleCommand("p_gutschein", DbConnection);
+                createGutscheinCmd.CommandType = CommandType.StoredProcedure;
+                createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = rando.Next(10000000, 99999999);
+                createGutscheinCmd.Parameters.Add("i_betrag_in", OracleDbType.Int32).Value = GutscheinBetrag;
 
-            createGutscheinCmd.ExecuteNonQuery();
+                createGutscheinCmd.ExecuteNonQuery();
 
-            DbConnection.Close();
+                DbConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
         }
 
         private void GutscheinValidieren()
         {
-            DbConnection.Open();
+            try
+            {
+                DbConnection.Open();
 
-            OracleCommand validateGutscheinCmd = new OracleCommand("p_use_gutschein", DbConnection);
-            validateGutscheinCmd.CommandType = CommandType.StoredProcedure;
-            validateGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = Gutscheincode;
+                OracleCommand validateGutscheinCmd = new OracleCommand("p_use_gutschein", DbConnection);
+                validateGutscheinCmd.CommandType = CommandType.StoredProcedure;
+                validateGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = Gutscheincode;
 
-            validateGutscheinCmd.ExecuteNonQuery();
+                validateGutscheinCmd.ExecuteNonQuery();
 
-            DbConnection.Close();
+                DbConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void BuyTicket()
         {
-            DbConnection.Open();
+            try
+            {
+                DbConnection.Open();
 
-            OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket2", DbConnection);
-            buyTicketCmd.CommandType = CommandType.StoredProcedure;
-            buyTicketCmd.Parameters.Add("i_ticketID_in", OracleDbType.Int32).Direction = ParameterDirection.Output;
-            buyTicketCmd.Parameters.Add("i_vorstellungsID_in", OracleDbType.Int32).Value = selectedVorstellung.VorstellungID;
-            buyTicketCmd.Parameters.Add("i_sitzplatzID_in", OracleDbType.Int32).Value = SelectedSitzplatz;
-            buyTicketCmd.Parameters.Add("i_vorteilskartenID_in", OracleDbType.Int32).Value = 8;
-            buyTicketCmd.Parameters.Add("v_ticketkategorie_in", OracleDbType.Varchar2).Value = "Normal";
-            buyTicketCmd.Parameters.Add("d_ausstellungszeit_in", OracleDbType.Date).Value = DateTime.Now;
-            buyTicketCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = 7;
+                OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket2", DbConnection);
+                buyTicketCmd.CommandType = CommandType.StoredProcedure;
+                buyTicketCmd.Parameters.Add("i_ticketID_in", OracleDbType.Int32).Direction = ParameterDirection.Output;
+                buyTicketCmd.Parameters.Add("i_vorstellungsID_in", OracleDbType.Int32).Value = selectedVorstellung.VorstellungID;
+                buyTicketCmd.Parameters.Add("i_sitzplatzID_in", OracleDbType.Int32).Value = SelectedSitzplatz;
+                buyTicketCmd.Parameters.Add("i_vorteilskartenID_in", OracleDbType.Int32).Value = 8;
+                buyTicketCmd.Parameters.Add("v_ticketkategorie_in", OracleDbType.Varchar2).Value = "Normal";
+                buyTicketCmd.Parameters.Add("d_ausstellungszeit_in", OracleDbType.Date).Value = DateTime.Now;
+                buyTicketCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = 7;
 
-            buyTicketCmd.ExecuteNonQuery();
+                buyTicketCmd.ExecuteNonQuery();
 
-            DbConnection.Close();
+                DbConnection.Close();
 
-            CheckSeats(SelectedVorstellungen.VorstellungID);
+                CheckSeats(SelectedVorstellungen.VorstellungID);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void CheckSeats(int VorstellungsID)
         {
-            FreieSitzplaetze.Clear();
-            DbConnection.Open();
-            OracleCommand checkSeatsCmd = new OracleCommand("p_freie_plaetze", DbConnection);
-            checkSeatsCmd.Parameters.Add("i_vorstellungsid_in", OracleDbType.Int32).Value = VorstellungsID;
-            checkSeatsCmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-            checkSeatsCmd.CommandType = CommandType.StoredProcedure;
-
-            checkSeatsCmd.ExecuteNonQuery();
-
-            OracleDataReader reader = checkSeatsCmd.ExecuteReader();
-            object[] values;
-            while (reader.Read())
+            try
             {
-                //sitzplatzid INT, sitzplatznummer INT, reihe INT, saalid Int, sitzplatzkategorieid INT
-                values = new object[reader.FieldCount];
-                reader.GetValues(values);
-                Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[3]), 
-                    Convert.ToInt32(values[1]), Convert.ToInt32(values[2]));
-                FreieSitzplaetze.Add(TempSitzplatz);
-            }
+                FreieSitzplaetze.Clear();
+                DbConnection.Open();
+                OracleCommand checkSeatsCmd = new OracleCommand("p_freie_plaetze", DbConnection);
+                checkSeatsCmd.Parameters.Add("i_vorstellungsid_in", OracleDbType.Int32).Value = VorstellungsID;
+                checkSeatsCmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                checkSeatsCmd.CommandType = CommandType.StoredProcedure;
 
-            DbConnection.Close();
+                checkSeatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = checkSeatsCmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    //sitzplatzid INT, sitzplatznummer INT, reihe INT, saalid Int, sitzplatzkategorieid INT
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[3]),
+                        Convert.ToInt32(values[1]), Convert.ToInt32(values[2]));
+                    FreieSitzplaetze.Add(TempSitzplatz);
+                }
+
+                DbConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void AddKunde()
         {
-            DbConnection.Open();
-            Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag);
+            try
+            {
+                DbConnection.Open();
+                Kunde TempKunde = new Kunde(Vorname, Nachname, Strasse, Hausnr, PLZ, Stadt, Geburtstag);
 
-            OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
-            addCustomerCmd.CommandType = CommandType.StoredProcedure;
-            addCustomerCmd.Parameters.Add("v_vorname_in", OracleDbType.Varchar2).Value = TempKunde.Vorname;
-            addCustomerCmd.Parameters.Add("v_nachname_in", OracleDbType.Varchar2).Value = TempKunde.Nachname;
-            addCustomerCmd.Parameters.Add("v_strasse_in", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
-            addCustomerCmd.Parameters.Add("i_hausnummer_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
-            addCustomerCmd.Parameters.Add("i_postleitzahl_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
-            addCustomerCmd.Parameters.Add("v_stadt_in", OracleDbType.Varchar2).Value = TempKunde.Ort;
-            addCustomerCmd.Parameters.Add("d_erstelldatum_in", OracleDbType.Date).Value = TempKunde.Erstelldatum;
-            addCustomerCmd.Parameters.Add("d_geburtstag_in", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
+                OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
+                addCustomerCmd.CommandType = CommandType.StoredProcedure;
+                addCustomerCmd.Parameters.Add("v_vorname_in", OracleDbType.Varchar2).Value = TempKunde.Vorname;
+                addCustomerCmd.Parameters.Add("v_nachname_in", OracleDbType.Varchar2).Value = TempKunde.Nachname;
+                addCustomerCmd.Parameters.Add("v_strasse_in", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
+                addCustomerCmd.Parameters.Add("i_hausnummer_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
+                addCustomerCmd.Parameters.Add("i_postleitzahl_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
+                addCustomerCmd.Parameters.Add("v_stadt_in", OracleDbType.Varchar2).Value = TempKunde.Ort;
+                addCustomerCmd.Parameters.Add("d_erstelldatum_in", OracleDbType.Date).Value = TempKunde.Erstelldatum;
+                addCustomerCmd.Parameters.Add("d_geburtstag_in", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
 
-            addCustomerCmd.ExecuteNonQuery();
+                addCustomerCmd.ExecuteNonQuery();
 
-            DbConnection.Close();
+                DbConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void ViewLebensmittel()
         {
-            Lebensmittels.Clear();
-
-            DbConnection.Open();
-            OracleCommand cmd = new OracleCommand("p_view_lebensmittel", DbConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-             cmd.ExecuteNonQuery();
-
-            OracleDataReader reader = cmd.ExecuteReader();
-            object[] values;
-            while (reader.Read())
+            try
             {
-                //LebensmittelID INT, Name string, kategorie string, price decimal
-                values = new object[reader.FieldCount];
-                reader.GetValues(values);
-                Lebensmittel TempLebensmittel = new Lebensmittel(Convert.ToInt32(values[0]), 
-                    (string)values[1], (string)values[2], Convert.ToDecimal(values[3]));
-                Lebensmittels.Add(TempLebensmittel);
-            }
+                Lebensmittels.Clear();
 
-            DbConnection.Close();
+                DbConnection.Open();
+                OracleCommand cmd = new OracleCommand("p_view_lebensmittel", DbConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();
+
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    //LebensmittelID INT, Name string, kategorie string, price decimal
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    Lebensmittel TempLebensmittel = new Lebensmittel(Convert.ToInt32(values[0]),
+                        (string)values[1], (string)values[2], Convert.ToDecimal(values[3]));
+                    Lebensmittels.Add(TempLebensmittel);
+                }
+
+                DbConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void UpdatePrice()
         {
-            DbConnection.Open();
+            try
+            {
+                DbConnection.Open();
 
-            OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
-            updatePriceCmd.CommandType = CommandType.StoredProcedure;
-            updatePriceCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
-            updatePriceCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = NewPrice;
+                OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
+                updatePriceCmd.CommandType = CommandType.StoredProcedure;
+                updatePriceCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
+                updatePriceCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = NewPrice;
 
-            updatePriceCmd.ExecuteNonQuery();
+                updatePriceCmd.ExecuteNonQuery();
 
-            DbConnection.Close();
+                DbConnection.Close();
 
-            ViewLebensmittel();
+                ViewLebensmittel();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void GetKunden()
         {
-            Kunden.Clear();
-
-            DbConnection.Open();
-            OracleCommand cmd = new OracleCommand("p_view_kunde", DbConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-            cmd.ExecuteNonQuery();
-
-            OracleDataReader reader = cmd.ExecuteReader();
-            object[] values;
-            while (reader.Read())
+            try
             {
-                //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
-                values = new object[reader.FieldCount];
-                reader.GetValues(values);
-                Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
-                Kunden.Add(tmp);
-            }
+                Kunden.Clear();
 
-            DbConnection.Close();
-            Kunden = new ObservableCollection<Kunde>(Kunden.OrderBy(i => i.ID));
+                DbConnection.Open();
+                OracleCommand cmd = new OracleCommand("p_view_kunde", DbConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();
+
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
+                    Kunden.Add(tmp);
+                }
+
+                DbConnection.Close();
+                Kunden = new ObservableCollection<Kunde>(Kunden.OrderBy(i => i.ID));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void GetFilme()
         {
+            try
+            {
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -427,6 +486,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             DbConnection.Close();
             Filme = new ObservableCollection<Film>(Filme.OrderBy(i => i.FilmID));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
     }
 }
