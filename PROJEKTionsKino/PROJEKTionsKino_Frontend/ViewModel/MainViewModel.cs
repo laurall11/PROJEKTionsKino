@@ -201,7 +201,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             DbConnection.Close();
 
-
+            //25,4, 30, 25, 20
             //BelegteSitzplaetze.Clear();
             //FreieSitzplatzID.Clear();
             //DbConnection.Open();
