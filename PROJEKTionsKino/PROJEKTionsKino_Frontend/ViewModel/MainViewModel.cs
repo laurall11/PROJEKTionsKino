@@ -271,7 +271,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
             updatePriceCmd.CommandType = CommandType.StoredProcedure;
             updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
-            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = SelectedLebensmittel.Preis;
+            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = NewPrice;
 
             updatePriceCmd.ExecuteNonQuery();
 
