@@ -73,14 +73,27 @@
                 </Grid>
             </TabItem>
             <TabItem>
-                <TabItem.Header>Lebensmittelpreis ändern</TabItem.Header>
+                <TabItem.Header>Lebensmittel</TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid Margin="5"/>
-                    
+
+                    <StackPanel>
+                        <DataGrid Margin="5" Height="180"/>
+                        <DataGrid Margin="5" Height="180"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Label Content="Neuer Preis:" Height="30"/>
+                        <StackPanel Orientation="Horizontal" Width="180">
+                            <TextBox Height="30" Width="150"/>
+                            <Label Content="EUR"/>
+                        </StackPanel>
+                        <Button Content="Ändern" Height="30" Width="180" Background="CornflowerBlue" Foreground="White" 
+                                FontSize="12pt" Margin="0, 10"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -8,10 +8,18 @@ namespace PROJEKTionsKino_Frontend.Model
 {
     public class Lebensmittel
     {
+        public Lebensmittel(int lebensmittelID, string name, decimal preis, string kategorie)
+        {
+            LebensmittelID = lebensmittelID;
+            Name = name;
+            Preis = preis;
+            Kategorie = kategorie;
+        }
+
         //LebensmittelID INT, Name string, Preis double, kategorie string
         public int LebensmittelID { get; set; }
         public string Name { get; set; }
-        public double Preis { get; set; }
+        public decimal Preis { get; set; }
         public string Kategorie { get; set; }
     }
 }
