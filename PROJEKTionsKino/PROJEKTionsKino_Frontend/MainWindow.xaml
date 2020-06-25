@@ -64,16 +64,24 @@
                     </Grid.RowDefinitions>
                     <DataGrid Grid.ColumnSpan="2" ItemsSource="{Binding Filme}" AutoGenerateColumns="True" ColumnWidth="*" Margin="5" SelectedItem="{Binding SelectedFilm}"/>
 
-                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Label Height="30" Content="Sitzplatz wählen:"/>
-                        <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}" DisplayMemberPath="Sitzplatznummer"/>
-                        <Button Content="Ticket kaufen" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}"/>
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel>
+
+                            <Label Height="30" Content="Gutscheincode eingeben:"/>
+                            <TextBox Width="150" Height="30" Margin="0,10"/>
+                            <Button Content="Gutschein validieren" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding GutscheinValidierenClickedCmd}"/>
+                        </StackPanel>
+                        <StackPanel Margin="60,0,0,0">
+                            <Label Height="30" Content="Sitzplatz wählen:"/>
+                            <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}" DisplayMemberPath="Sitzplatznummer"/>
+                            <Button Content="Ticket kaufen" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}"/>
+                        </StackPanel>
                     </StackPanel>
                     <DataGrid Grid.Column="1" Grid.Row="1" Margin="5" ItemsSource="{Binding Vorstellungen}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedVorstellungen}" />
                 </Grid>
             </TabItem>
             <TabItem>
-                <TabItem.Header>Lebensmittel</TabItem.Header>
+                <TabItem.Header>Verkauf</TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
@@ -86,13 +94,26 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Label Content="Neuer Preis:" Height="30"/>
-                        <StackPanel Orientation="Horizontal" Width="180">
-                            <TextBox Height="30" Width="150" Text="{Binding NewPrice}"/>
-                            <Label Content="EUR"/>
-                        </StackPanel>
-                        <Button Content="Ändern" Height="30" Width="180" Background="CornflowerBlue" Foreground="White" 
+                        <StackPanel>
+
+                            <Label Content="Neuer Preis:" Height="30"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Height="30" Width="200" Text="{Binding NewPrice}"/>
+                                <Label Content="EUR"/>
+                            </StackPanel>
+                            <Button Content="Ändern" Height="30" Width="232" Background="CornflowerBlue" Foreground="White" 
                                 FontSize="12pt" Margin="0, 10" Command="{Binding UpdatePreisClickedCmd}"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,50,0,0">
+
+                            <Label Content="Neuer Gutschein:" Height="30"/>
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBox Height="30" Width="150" Text="{Binding NewGutscheinID}"/>
+                                <Label Content="Vorstellungen"/>
+                            </StackPanel>
+                            <Button Content="Gutschein anlegen" Height="30" Width="232" Background="CornflowerBlue" Foreground="White" 
+                                    FontSize="12pt" Margin="0, 10" Command="{Binding GutscheinErstellenClickedCmd}"/>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>

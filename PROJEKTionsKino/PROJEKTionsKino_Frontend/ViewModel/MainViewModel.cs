@@ -133,6 +133,15 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         #endregion
 
+        #region Gutschein
+
+        public double GutscheinID { get; set; }
+        public double NewGutscheinID { get; set; }
+        public RelayCommand GutscheinValidierenClickedCmd { get; set; }
+        public RelayCommand GutscheinErstellenClickedCmd { get; set; }
+
+        #endregion
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
@@ -164,6 +173,24 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 }, () => { return (SelectedLebensmittel != null) ;
                 });
 
+            GutscheinValidierenClickedCmd = new RelayCommand(
+                () =>
+                {
+                    GutscheinValidieren();
+
+                }, () => {
+                    return (GutscheinID > 0);
+                });
+
+            GutscheinErstellenClickedCmd = new RelayCommand(
+                () =>
+                {
+                    GutscheinErstellen();
+
+                }, () => {
+                    return (NewGutscheinID > 0);
+                });
+
             if (!IsInDesignMode)
             {
                 GetKunden();
@@ -172,19 +199,29 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
         }
 
+        private void GutscheinErstellen()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void GutscheinValidieren()
+        {
+            throw new NotImplementedException();
+        }
+
         private void BuyTicket()
         {
             DbConnection.Open();
 
             OracleCommand buyTicketCmd = new OracleCommand("p_buy_ticket2", DbConnection);
             buyTicketCmd.CommandType = CommandType.StoredProcedure;
-            buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
-            buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = selectedVorstellung.VorstellungID;
-            buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = SelectedSitzplatz;
-            buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
-            buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
-            buyTicketCmd.Parameters.Add("ausstellungszeit", OracleDbType.Date).Value = DateTime.Now;
-            buyTicketCmd.Parameters.Add("preis", OracleDbType.Decimal).Value = 7;
+            buyTicketCmd.Parameters.Add("i_ticketID_in", OracleDbType.Int32).Direction = ParameterDirection.Output;
+            buyTicketCmd.Parameters.Add("i_vorstellungsID_in", OracleDbType.Int32).Value = selectedVorstellung.VorstellungID;
+            buyTicketCmd.Parameters.Add("i_sitzplatzID_in", OracleDbType.Int32).Value = SelectedSitzplatz;
+            buyTicketCmd.Parameters.Add("i_vorteilskartenID_in", OracleDbType.Int32).Value = 8;
+            buyTicketCmd.Parameters.Add("v_ticketkategorie_in", OracleDbType.Varchar2).Value = "Normal";
+            buyTicketCmd.Parameters.Add("d_ausstellungszeit_in", OracleDbType.Date).Value = DateTime.Now;
+            buyTicketCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = 7;
 
             buyTicketCmd.ExecuteNonQuery();
 
@@ -198,8 +235,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             FreieSitzplaetze.Clear();
             DbConnection.Open();
             OracleCommand checkSeatsCmd = new OracleCommand("p_freie_plaetze", DbConnection);
-            checkSeatsCmd.Parameters.Add("vorstellungsid", OracleDbType.Int32).Value = VorstellungsID;
-            checkSeatsCmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            checkSeatsCmd.Parameters.Add("i_vorstellungsid_in", OracleDbType.Int32).Value = VorstellungsID;
+            checkSeatsCmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
             checkSeatsCmd.CommandType = CommandType.StoredProcedure;
 
             checkSeatsCmd.ExecuteNonQuery();
@@ -226,14 +263,14 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             OracleCommand addCustomerCmd = new OracleCommand("p_create_kunde7", DbConnection);
             addCustomerCmd.CommandType = CommandType.StoredProcedure;
-            addCustomerCmd.Parameters.Add("vorname", OracleDbType.Varchar2).Value = TempKunde.Vorname;
-            addCustomerCmd.Parameters.Add("nachname", OracleDbType.Varchar2).Value = TempKunde.Nachname;
-            addCustomerCmd.Parameters.Add("strasse", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
-            addCustomerCmd.Parameters.Add("hausnummer", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
-            addCustomerCmd.Parameters.Add("postleitzahl", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
-            addCustomerCmd.Parameters.Add("stadt", OracleDbType.Varchar2).Value = TempKunde.Ort;
-            addCustomerCmd.Parameters.Add("erstelldatum", OracleDbType.Date).Value = TempKunde.Erstelldatum;
-            addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
+            addCustomerCmd.Parameters.Add("v_vorname_in", OracleDbType.Varchar2).Value = TempKunde.Vorname;
+            addCustomerCmd.Parameters.Add("v_nachname_in", OracleDbType.Varchar2).Value = TempKunde.Nachname;
+            addCustomerCmd.Parameters.Add("v_strasse_in", OracleDbType.Varchar2).Value = TempKunde.Straﬂe;
+            addCustomerCmd.Parameters.Add("i_hausnummer_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.HausNr);
+            addCustomerCmd.Parameters.Add("i_postleitzahl_in", OracleDbType.Int32).Value = Convert.ToInt32(TempKunde.PLZ);
+            addCustomerCmd.Parameters.Add("v_stadt_in", OracleDbType.Varchar2).Value = TempKunde.Ort;
+            addCustomerCmd.Parameters.Add("d_erstelldatum_in", OracleDbType.Date).Value = TempKunde.Erstelldatum;
+            addCustomerCmd.Parameters.Add("d_geburtstag_in", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
 
             addCustomerCmd.ExecuteNonQuery();
 
@@ -247,9 +284,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand("p_view_lebensmittel", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
-            cmd.ExecuteNonQuery();
+             cmd.ExecuteNonQuery();
 
             OracleDataReader reader = cmd.ExecuteReader();
             object[] values;
@@ -272,8 +309,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
             OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
             updatePriceCmd.CommandType = CommandType.StoredProcedure;
-            updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
-            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = NewPrice;
+            updatePriceCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
+            updatePriceCmd.Parameters.Add("n_preis_in", OracleDbType.Decimal).Value = NewPrice;
 
             updatePriceCmd.ExecuteNonQuery();
 
@@ -289,7 +326,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand("p_view_kunde", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
             cmd.ExecuteNonQuery();
 
@@ -313,7 +350,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
             cmd.ExecuteNonQuery();
 
