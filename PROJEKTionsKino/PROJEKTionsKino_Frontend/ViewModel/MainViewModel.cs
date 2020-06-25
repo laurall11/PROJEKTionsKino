@@ -112,6 +112,14 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private Film _selectedFilm;
 
+
+        #region UpdatePrice
+
+        public decimal NewPrice { get; set; }
+        public int LebensmittelID { get; set; }
+
+        #endregion
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
@@ -206,6 +214,20 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             addCustomerCmd.Parameters.Add("geburtstag", OracleDbType.Date).Value = TempKunde.Geburtsdatum;
 
             addCustomerCmd.ExecuteNonQuery();
+
+            DbConnection.Close();
+        }
+
+        public void UpdatePrice()
+        {
+            DbConnection.Open();
+
+            OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
+            updatePriceCmd.CommandType = CommandType.StoredProcedure;
+            updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = LebensmittelID;
+            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = NewPrice;
+
+            updatePriceCmd.ExecuteNonQuery();
 
             DbConnection.Close();
         }
