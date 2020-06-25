@@ -125,10 +125,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public Lebensmittel SelectedLebensmittel
         {
             get { return selectedLebensmittel; }
-            set { selectedLebensmittel = value; }
+            set { selectedLebensmittel = value; UpdatePreisClickedCmd.RaiseCanExecuteChanged(); }
         }
 
         public RelayCommand UpdatePreisClickedCmd { get; set; }
+
 
         #endregion
 
@@ -159,7 +160,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     UpdatePrice();
-                }, () => { return SelectedLebensmittel == null;  });
+
+                }, () => { return (SelectedLebensmittel != null) ;
+                });
 
             if (!IsInDesignMode)
             {
@@ -177,7 +180,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             buyTicketCmd.CommandType = CommandType.StoredProcedure;
             buyTicketCmd.Parameters.Add("ticketID", OracleDbType.Int32).Direction = ParameterDirection.Output;
             buyTicketCmd.Parameters.Add("vorstellungsID", OracleDbType.Int32).Value = selectedVorstellung.VorstellungID;
-
             buyTicketCmd.Parameters.Add("sitzplatzID", OracleDbType.Int32).Value = SelectedSitzplatz;
             buyTicketCmd.Parameters.Add("vorteilskartenID", OracleDbType.Int32).Value = 3;
             buyTicketCmd.Parameters.Add("ticketkategorie", OracleDbType.Varchar2).Value = "Normal";
@@ -271,11 +273,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             OracleCommand updatePriceCmd = new OracleCommand("p_update_lebensmittelpreis", DbConnection);
             updatePriceCmd.CommandType = CommandType.StoredProcedure;
             updatePriceCmd.Parameters.Add("id", OracleDbType.Int32).Value = SelectedLebensmittel.LebensmittelID;
-            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = SelectedLebensmittel.Preis;
+            updatePriceCmd.Parameters.Add("p", OracleDbType.Decimal).Value = NewPrice;
 
             updatePriceCmd.ExecuteNonQuery();
 
             DbConnection.Close();
+
+            ViewLebensmittel();
         }
 
         public void GetKunden()
