@@ -21,7 +21,7 @@ namespace PROJEKTionsKino_Frontend.Model
             Erstelldatum = erstelldatum;
         }
 
-        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, string ort, DateTime geburtsdatum, bool wantsVK)
+        public Kunde(string vorname, string nachname, string straße, int hausNr, int pLZ, string ort, DateTime geburtsdatum)
         {
             Vorname = vorname;
             Nachname = nachname;
@@ -31,7 +31,6 @@ namespace PROJEKTionsKino_Frontend.Model
             PLZ = pLZ;
             Geburtsdatum = geburtsdatum;
             Erstelldatum = DateTime.Now;
-            IsVorteilskunde = wantsVK;
         }
 
         public int ID { get; set; }
@@ -43,6 +42,5 @@ namespace PROJEKTionsKino_Frontend.Model
         public string Ort { get; set; }
         public DateTime Geburtsdatum { get; set; }
         public DateTime Erstelldatum { get; set; }
-        public bool IsVorteilskunde { get; set; }
     }
 }
