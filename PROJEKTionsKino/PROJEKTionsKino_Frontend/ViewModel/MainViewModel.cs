@@ -136,9 +136,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         #region Gutschein
 
         public double GutscheinID { get; set; }
-        public double NewGutscheinID { get; set; }
+        public double GutscheinBetrag { get; set; }
         public RelayCommand GutscheinValidierenClickedCmd { get; set; }
         public RelayCommand GutscheinErstellenClickedCmd { get; set; }
+
+        public Random rando = new Random();
 
         #endregion
 
@@ -188,7 +190,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     GutscheinErstellen();
 
                 }, () => {
-                    return (NewGutscheinID > 0);
+                    return (GutscheinBetrag > 0);
                 });
 
             if (!IsInDesignMode)
@@ -201,7 +203,17 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private void GutscheinErstellen()
         {
-            throw new NotImplementedException();
+            DbConnection.Open();
+            //INT ID INT BETRAG 8 Stellen
+            OracleCommand createGutscheinCmd = new OracleCommand("p_gutschein", DbConnection);
+            createGutscheinCmd.CommandType = CommandType.StoredProcedure;
+            createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = rando.Next(10000000, 99999999);
+            createGutscheinCmd.Parameters.Add("i_betrag_in", OracleDbType.Int32).Value = GutscheinBetrag;
+
+            createGutscheinCmd.ExecuteNonQuery();
+
+            DbConnection.Close();
+
         }
 
         private void GutscheinValidieren()
