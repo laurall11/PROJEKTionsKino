@@ -234,6 +234,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public void GetKunden()
         {
+            Kunden.Clear();
+
             DbConnection.Open();
             OracleCommand cmd = new OracleCommand("p_view_kunde", DbConnection);
             cmd.CommandType = CommandType.StoredProcedure;
