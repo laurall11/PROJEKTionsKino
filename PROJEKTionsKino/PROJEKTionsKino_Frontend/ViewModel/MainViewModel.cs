@@ -226,6 +226,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             validateGutscheinCmd.CommandType = CommandType.StoredProcedure;
             validateGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = Gutscheincode;
 
+            validateGutscheinCmd.ExecuteNonQuery();
+
             DbConnection.Close();
         }
 
