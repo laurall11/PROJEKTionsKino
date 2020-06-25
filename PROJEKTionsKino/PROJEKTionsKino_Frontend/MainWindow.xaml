@@ -68,7 +68,7 @@
                         <StackPanel>
 
                             <Label Height="30" Content="Gutscheincode eingeben:"/>
-                            <TextBox Width="150" Height="30" Margin="0,10"/>
+                            <TextBox Width="150" Height="30" Margin="0,10" Text="{Binding Gutscheincode}"/>
                             <Button Content="Gutschein validieren" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding GutscheinValidierenClickedCmd}"/>
                         </StackPanel>
                         <StackPanel Margin="60,0,0,0">

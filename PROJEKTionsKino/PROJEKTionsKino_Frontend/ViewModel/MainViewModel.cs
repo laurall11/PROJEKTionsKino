@@ -136,7 +136,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         #region Gutschein
 
         public double GutscheinID { get; set; }
-        public double GutscheinBetrag { get; set; };
+        public double GutscheinBetrag { get; set; }
+
+        public int Gutscheincode { get; set; }
 
 
         public RelayCommand GutscheinValidierenClickedCmd { get; set; }
@@ -182,8 +184,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     GutscheinValidieren();
 
-                }, () => {
-                    return (GutscheinBetrag > 0);
                 });
 
             GutscheinErstellenClickedCmd = new RelayCommand(
@@ -222,10 +222,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             DbConnection.Open();
 
-            //i_id IN INT
-
-            OracleCommand validateGutscheinCmd = new OracleCommand("", DbConnection);
+            OracleCommand validateGutscheinCmd = new OracleCommand("p_use_gutschein", DbConnection);
             validateGutscheinCmd.CommandType = CommandType.StoredProcedure;
+            validateGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = Gutscheincode;
 
             DbConnection.Close();
         }
