@@ -240,11 +240,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             try
             {
+                int vorteilskartenID = GetVorteilskartenID();
+
                 DbConnection.Open();
                 OracleCommand KundenStatsCmd = new OracleCommand();
                 KundenStatsCmd.Connection = DbConnection;
                 KundenStatsCmd.CommandType = CommandType.Text;
-                KundenStatsCmd.CommandText = "SELECT f_total_view_time(7) FROM DUAL";
+                KundenStatsCmd.CommandText = $"SELECT f_total_view_time({vorteilskartenID}) FROM DUAL";
                 KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
                 KundenStatsCmd.ExecuteNonQuery();
 
@@ -266,7 +268,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
         }
 
-        private void GetAnzahlFilme()
+        private int GetVorteilskartenID()
         {
             try
             {
@@ -274,7 +276,40 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 OracleCommand KundenStatsCmd = new OracleCommand();
                 KundenStatsCmd.Connection = DbConnection;
                 KundenStatsCmd.CommandType = CommandType.Text;
-                KundenStatsCmd.CommandText = "SELECT f_movie_viewings(5) FROM DUAL";
+                KundenStatsCmd.CommandText = $"SELECT f_get_vorteilkartenid({SelectedKunde.ID}) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values = new object[1];
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                }
+
+                DbConnection.Close();
+
+                return Convert.ToInt32(values[0]);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return -999;
+            }
+        }
+
+        private void GetAnzahlFilme()
+        {
+            try
+            {
+                int vorteilskartenID = GetVorteilskartenID();
+
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = $"SELECT f_movie_viewings({vorteilskartenID}) FROM DUAL";
                 KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
                 KundenStatsCmd.ExecuteNonQuery();
 

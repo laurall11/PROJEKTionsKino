@@ -59,7 +59,7 @@
                             <TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding ZeitGes}"/>
                         </StackPanel>
                     </StackPanel>
-                    <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*"/>
+                    <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedKunde}"/>
                 </Grid>
             </TabItem>
             <TabItem>
