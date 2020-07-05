@@ -115,6 +115,7 @@
     <Compile Include="Model\Film.cs" />
     <Compile Include="Model\Kunde.cs" />
     <Compile Include="Model\Lebensmittel.cs" />
+    <Compile Include="Model\Mitarbeiter.cs" />
     <Compile Include="Model\Saal.cs" />
     <Compile Include="Model\Sitzplatz.cs" />
     <Compile Include="Model\Vorstellung.cs" />

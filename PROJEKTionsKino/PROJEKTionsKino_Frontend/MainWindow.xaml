@@ -100,7 +100,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittels}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedLebensmittel}"/>
+                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittel}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedLebensmittel}"/>
                         <DataGrid Margin="5" Height="180"/>
                     </StackPanel>
 
@@ -127,6 +127,10 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>Mitarbeiter</TabItem.Header>
+                <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Mitarbeiter}" AutoGenerateColumns="True" ColumnWidth="*" />
             </TabItem>
         </TabControl>
     </Grid>
