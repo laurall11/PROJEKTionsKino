@@ -377,6 +377,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 createGutscheinCmd.Parameters.Add("i_betrag_in", OracleDbType.Int32).Value = GutscheinBetrag;
 
                 createGutscheinCmd.ExecuteNonQuery();
+                MessageBox.Show("Ihr Gutscheincode lautet: " + GutscheinCode);
 
                 MessageBox.Show("Ihr Gutscheincode lautet: " + GutscheinCode);
 
@@ -400,6 +401,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 validateGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = Gutscheincode;
 
                 validateGutscheinCmd.ExecuteNonQuery();
+                MessageBox.Show("Ihr Gutschein ist für diese Vorstellung gültig");
 
                 DbConnection.Close();
             }
