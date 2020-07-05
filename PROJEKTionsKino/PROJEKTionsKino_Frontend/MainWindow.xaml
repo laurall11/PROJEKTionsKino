@@ -8,73 +8,84 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
-        <ViewModel:MainViewModel />
+        <ViewModel:MainViewModel/>
     </Window.DataContext>
     <Grid>
         <TabControl>
             <TabItem>
-                <TabItem.Header>Kunde anlegen</TabItem.Header>
+                <TabItem.Header>Kunden anlegen</TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="70*" />
-                        <ColumnDefinition Width="324*" />
-                        <ColumnDefinition Width="393*" />
+                        <ColumnDefinition Width="70*"/>
+                        <ColumnDefinition Width="324*"/>
+                        <ColumnDefinition Width="393*"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <Label Content="Vorname: " />
-                        <Label Content="Nachname: " />
-                        <Label Content="Straße: " />
-                        <Label Content="HausNr: " />
-                        <Label Content="Ort: " />
-                        <Label Content="Geburtstag: " />
+                        <Label Content="Vorname: "/>
+                        <Label Content="Nachname: "/>
+                        <Label Content="Straße: "/>
+                        <Label Content="HausNr: "/>
+                        <Label Content="Ort: "/>
+                        <Label Content="Geburtstag: "/>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <TextBox Height="20" Margin="3" Text="{Binding Vorname}" />
-                        <TextBox Height="20" Margin="3" Text="{Binding Nachname}" />
-                        <TextBox Height="20" Margin="3" Text="{Binding Strasse}" />
-                        <TextBox Height="20" Margin="3" Text="{Binding Hausnr}" />
+                        <TextBox Height="20" Margin="3" Text="{Binding Vorname}"/>
+                        <TextBox Height="20" Margin="3" Text="{Binding Nachname}"/>
+                        <TextBox Height="20" Margin="3" Text="{Binding Strasse}"/>
+                        <TextBox Height="20" Margin="3" Text="{Binding Hausnr}"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Height="20" Margin="3" Text="{Binding Stadt}" Width="140" />
-                            <Label Content="PLZ:" />
-                            <TextBox Height="20" Margin="3" Text="{Binding PLZ}" Width="140" />
+                            <TextBox Height="20" Margin="3" Text="{Binding Stadt}" Width="140"/>
+                            <Label Content="PLZ:"/>
+                            <TextBox Height="20" Margin="3" Text="{Binding PLZ}" Width="140"/>
                         </StackPanel>
-                        <DatePicker Margin="3" Text="{Binding Geburtstag}" />
+                        <DatePicker Margin="3" Text="{Binding Geburtstag}"/>
+                        <Button Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="2" Margin="0,75,0,0">
-                        <Button Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}" />
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Kundenstatistiken anzeigen" FontWeight="Bold"/>
+                        <Label Content="*Bitte wählen Sie einen Kunden aus und drücken Sie den Button" FontStyle="Italic"/>
+                        <Button Content="Kundenstatistiken" Width="150" Height="30" Background="CornflowerBlue" Foreground="White" Command="{Binding KundenstatsBtnClickedCmd}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <Label Content="Anzahl geschauter Filme:"/>
+                            <TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding AnzahlFilme}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Gesamt geschaute Filmzeit:"/>
+                            <TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding ZeitGes}"/>
+                        </StackPanel>
                     </StackPanel>
-                    <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*" />
+                    <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedKunde}"/>
                 </Grid>
             </TabItem>
             <TabItem>
                 <TabItem.Header>Ticket kaufen</TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.ColumnSpan="2" ItemsSource="{Binding Filme}" AutoGenerateColumns="True" ColumnWidth="*" Margin="5" SelectedItem="{Binding SelectedFilm}" />
+                    <DataGrid Grid.ColumnSpan="2" ItemsSource="{Binding Filme}" AutoGenerateColumns="True" ColumnWidth="*" Margin="5" SelectedItem="{Binding SelectedFilm}"/>
 
                     <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                         <StackPanel>
 
-                            <Label Height="30" Content="Gutscheincode eingeben:" />
-                            <TextBox Width="150" Height="30" Margin="0,10" Text="{Binding Gutscheincode}" />
-                            <Button Content="Gutschein validieren" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding GutscheinValidierenClickedCmd}" />
+                            <Label Height="30" Content="Gutscheincode eingeben:"/>
+                            <TextBox Width="150" Height="30" Margin="0,10" Text="{Binding Gutscheincode}"/>
+                            <Button Content="Gutschein validieren" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding GutscheinValidierenClickedCmd}"/>
                         </StackPanel>
                         <StackPanel Margin="60,0,0,0">
-                            <Label Height="30" Content="Sitzplatz wählen:" />
-                            <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}" DisplayMemberPath="Sitzplatznummer" />
-                            <Button Content="Ticket kaufen" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}" />
+                            <Label Height="30" Content="Sitzplatz wählen:"/>
+                            <ComboBox Width="150" Height="30" Margin="0,10" ItemsSource="{Binding FreieSitzplaetze}" SelectedItem="{Binding SelectedSitzplatz}" DisplayMemberPath="Sitzplatznummer"/>
+                            <Button Content="Ticket kaufen" Margin="0,20" Background="CornflowerBlue" Foreground="White" FontSize="12pt" Height="30" Width="150" Command="{Binding TicketKaufenBtnClickedCmd}"/>
                         </StackPanel>
                     </StackPanel>
                     <DataGrid Grid.Column="1" Grid.Row="1" Margin="5" ItemsSource="{Binding Vorstellungen}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedVorstellungen}" />
@@ -84,42 +95,38 @@
                 <TabItem.Header>Verkauf</TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittels}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedLebensmittel}" />
-                        <DataGrid Margin="5" Height="180" />
+                        <DataGrid Margin="5" Height="180" ItemsSource="{Binding Lebensmittels}" AutoGenerateColumns="True" ColumnWidth="*" SelectedItem="{Binding SelectedLebensmittel}"/>
+                        <DataGrid Margin="5" Height="180"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel>
 
-                            <Label Content="Neuer Preis:" Height="30" />
+                            <Label Content="Neuer Preis:" Height="30"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Height="30" Width="200" Text="{Binding NewPrice}" />
-                                <Label Content="EUR" />
+                                <TextBox Height="30" Width="200" Text="{Binding NewPrice}"/>
+                                <Label Content="EUR"/>
                             </StackPanel>
-                            <Button Content="Ändern" Height="30" Width="232" Background="CornflowerBlue" Foreground="White"
-                                FontSize="12pt" Margin="0, 10" Command="{Binding UpdatePreisClickedCmd}" />
+                            <Button Content="Ändern" Height="30" Width="232" Background="CornflowerBlue" Foreground="White" 
+                                FontSize="12pt" Margin="0, 10" Command="{Binding UpdatePreisClickedCmd}"/>
                         </StackPanel>
                         <StackPanel Margin="0,50,0,0">
 
-                            <Label Content="Neuer Gutschein:" Height="30" />
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Height="30" Width="150" Text="{Binding GutscheinBetrag}" />
-                                <Label Content="Vorstellungen" />
+                            <Label Content="Neuer Gutschein:" Height="30"/>
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBox Height="30" Width="150" Text="{Binding GutscheinBetrag}"/>
+                                <Label Content="Vorstellungen"/>
                             </StackPanel>
-                            <Button Content="Gutschein anlegen" Height="30" Width="232" Background="CornflowerBlue" Foreground="White"
-                                    FontSize="12pt" Margin="0, 10" Command="{Binding GutscheinErstellenClickedCmd}" />
+                            <Button Content="Gutschein anlegen" Height="30" Width="232" Background="CornflowerBlue" Foreground="White" 
+                                    FontSize="12pt" Margin="0, 10" Command="{Binding GutscheinErstellenClickedCmd}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-            </TabItem>
-            <TabItem>
-                <TabItem.Header>Mitarbeiter</TabItem.Header>
-                <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Mitarbeiter}" AutoGenerateColumns="True" ColumnWidth="*" />
             </TabItem>
         </TabControl>
     </Grid>

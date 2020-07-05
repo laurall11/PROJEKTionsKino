@@ -145,6 +145,30 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         #endregion Gutschein
 
+        #region Kundenstats
+
+        public RelayCommand KundenstatsBtnClickedCmd { get; set; }
+
+        private int anzahlFilme;
+
+        public int AnzahlFilme
+        {
+            get { return anzahlFilme; }
+            set { anzahlFilme = value; RaisePropertyChanged(); }
+        }
+
+        private int zeitGes;
+
+        public int ZeitGes
+        {
+            get { return zeitGes; }
+            set { zeitGes = value; RaisePropertyChanged(); }
+        }
+
+        public Kunde SelectedKunde { get; set; }
+
+        #endregion
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
@@ -187,6 +211,14 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     GutscheinErstellen();
+                });
+
+            KundenstatsBtnClickedCmd = new RelayCommand(
+                () =>
+                {
+                    GetAnzahlFilme();
+                    GetGesamtZeit();
+
                 });
 
             if (!IsInDesignMode)
@@ -236,6 +268,101 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 MessageBox.Show(e.Message);
             }
 
+        }
+
+        private void GetGesamtZeit()
+        {
+            try
+            {
+                int vorteilskartenID = GetVorteilskartenID();
+
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = $"SELECT f_total_view_time({vorteilskartenID}) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    ZeitGes = Convert.ToInt32(values[0]);
+                }
+
+                DbConnection.Close();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        private int GetVorteilskartenID()
+        {
+            try
+            {
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = $"SELECT f_get_vorteilkartenid({SelectedKunde.ID}) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values = new object[1];
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                }
+
+                DbConnection.Close();
+
+                return Convert.ToInt32(values[0]);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return -999;
+            }
+        }
+
+        private void GetAnzahlFilme()
+        {
+            try
+            {
+                int vorteilskartenID = GetVorteilskartenID();
+
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = $"SELECT f_movie_viewings({vorteilskartenID}) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    AnzahlFilme = Convert.ToInt32(values[0]);
+                }
+
+                DbConnection.Close();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void GutscheinErstellen()
