@@ -358,6 +358,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -460,6 +461,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
