@@ -117,7 +117,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         public decimal NewPrice { get; set; }
         public int LebensmittelID { get; set; }
 
-        public ObservableCollection<Lebensmittel> Lebensmittels { get; set; }
+        public ObservableCollection<Lebensmittel> Lebensmittel { get; set; }
 
         private Lebensmittel selectedLebensmittel;
 
@@ -167,7 +167,13 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public Kunde SelectedKunde { get; set; }
 
-        #endregion
+        #endregion Kundenstats
+
+        #region Mitarbeiter
+
+        public ObservableCollection<Mitarbeiter> Mitarbeiter { get; set; }
+
+        #endregion Mitarbeiter
 
         public MainViewModel()
         {
@@ -177,7 +183,8 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             vDict = new Dictionary<int, ObservableCollection<Vorstellung>>();
             FreieSitzplaetze = new ObservableCollection<Sitzplatz>();
             Saale = new ObservableCollection<Saal>();
-            Lebensmittels = new ObservableCollection<Lebensmittel>();
+            Lebensmittel = new ObservableCollection<Lebensmittel>();
+            Mitarbeiter = new ObservableCollection<Mitarbeiter>();
 
             AddCustomerClickedCmd = new RelayCommand(
                 () =>
@@ -218,7 +225,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 {
                     GetAnzahlFilme();
                     GetGesamtZeit();
-
                 });
 
             if (!IsInDesignMode)
@@ -227,18 +233,14 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 GetFilme();
                 GetMitarbeiter();
                 GetLebensmittel();
-                
             }
         }
 
         private void GetMitarbeiter()
         {
-            DbConnection.Open();
-
-            try
-            {
-                Kunden.Clear();
-
+            //try
+            //{
+                Mitarbeiter.Clear();
                 DbConnection.Open();
                 OracleCommand cmd = new OracleCommand("p_view_mitarbeiter", DbConnection);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -250,24 +252,21 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 object[] values;
                 while (reader.Read())
                 {
-                    //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
-                    if (!values[2].Equals("KeinKunde"))
-                    {
-                        Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
-                        Kunden.Add(tmp);
-                    }
+
+                    //Mitarbeiterid, vorname, nachname, strasse, hausnummer, postleitzahl, stadt, geburtstag, erster_arbeitstag, offene_urlaubstage, bezeichnung, arbeitsbeginn, arbeitsende, wochenstunden, gehalt
+                    Mitarbeiter tmp = new Mitarbeiter(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8], Convert.ToInt32(values[9]), (string)values[10], (string)values[11], (string)values[12], Convert.ToDouble(values[13]), Convert.ToDouble(values[14]));
+                    Mitarbeiter.Add(tmp);
                 }
 
                 DbConnection.Close();
-                Kunden = new ObservableCollection<Kunde>(Kunden.OrderBy(i => i.ID));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
+                Mitarbeiter = new ObservableCollection<Mitarbeiter>(Mitarbeiter.OrderBy(i => i.ID));
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show(e.Message);
+            //}
         }
 
         private void GetGesamtZeit()
@@ -294,7 +293,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 }
 
                 DbConnection.Close();
-
             }
             catch (Exception e)
             {
@@ -357,7 +355,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 }
 
                 DbConnection.Close();
-
             }
             catch (Exception e)
             {
@@ -499,7 +496,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             try
             {
-                Lebensmittels.Clear();
+                Lebensmittel.Clear();
 
                 DbConnection.Open();
                 OracleCommand cmd = new OracleCommand("p_view_lebensmittel", DbConnection);
@@ -517,7 +514,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     reader.GetValues(values);
                     Lebensmittel TempLebensmittel = new Lebensmittel(Convert.ToInt32(values[0]),
                         (string)values[1], (string)values[2], Convert.ToDecimal(values[3]));
-                    Lebensmittels.Add(TempLebensmittel);
+                    Lebensmittel.Add(TempLebensmittel);
                 }
 
                 DbConnection.Close();
@@ -543,7 +540,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
                 DbConnection.Close();
 
-                ViewLebensmittel();
+                GetLebensmittel();
             }
             catch (Exception e)
             {
