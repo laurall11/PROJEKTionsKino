@@ -296,6 +296,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -326,6 +327,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
                 return -999;
             }
@@ -368,7 +370,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             try
             {
                 DbConnection.Open();
-                //INT ID INT BETRAG 8 Stellen
                 OracleCommand createGutscheinCmd = new OracleCommand("p_gutschein", DbConnection);
                 createGutscheinCmd.CommandType = CommandType.StoredProcedure;
                 createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = rando.Next(10000000, 99999999);
@@ -380,6 +381,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -400,6 +402,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -428,6 +431,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -449,7 +453,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 object[] values;
                 while (reader.Read())
                 {
-                    //sitzplatzid INT, sitzplatznummer INT, reihe INT, saalid Int, sitzplatzkategorieid INT
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
                     Sitzplatz TempSitzplatz = new Sitzplatz(Convert.ToInt32(values[0]), Convert.ToInt32(values[3]),
@@ -490,6 +493,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -511,7 +515,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 object[] values;
                 while (reader.Read())
                 {
-                    //LebensmittelID INT, Name string, kategorie string, price decimal
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
                     Lebensmittel TempLebensmittel = new Lebensmittel(Convert.ToInt32(values[0]),
@@ -523,6 +526,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -546,6 +550,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -567,7 +572,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 object[] values;
                 while (reader.Read())
                 {
-                    //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
                     if (!values[2].Equals("KeinKunde"))
@@ -582,6 +586,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
@@ -614,8 +619,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
                     if (!exists)
                     {
-                        //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
-                        //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
                         Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
                             Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
                             Convert.ToInt32(values[12]), (string)values[2],
@@ -651,6 +654,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
             catch (Exception e)
             {
+                DbConnection.Close();
                 MessageBox.Show(e.Message);
             }
         }
