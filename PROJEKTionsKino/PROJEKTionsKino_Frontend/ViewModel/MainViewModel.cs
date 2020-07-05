@@ -67,7 +67,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             set { freieSitzplaetze = value; }
         }
 
-
         private int selectedSitzplatz;
 
         public int SelectedSitzplatz
@@ -113,7 +112,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         private Film _selectedFilm;
 
-
         #region UpdatePrice
 
         public decimal NewPrice { get; set; }
@@ -131,8 +129,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public RelayCommand UpdatePreisClickedCmd { get; set; }
 
-
-        #endregion
+        #endregion UpdatePrice
 
         #region Gutschein
 
@@ -141,13 +138,12 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         public int Gutscheincode { get; set; }
 
-
         public RelayCommand GutscheinValidierenClickedCmd { get; set; }
         public RelayCommand GutscheinErstellenClickedCmd { get; set; }
 
         public Random rando = new Random();
 
-        #endregion
+        #endregion Gutschein
 
         public MainViewModel()
         {
@@ -176,7 +172,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     UpdatePrice();
-
                 }, () =>
                 {
                     return (SelectedLebensmittel != null);
@@ -186,22 +181,61 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 () =>
                 {
                     GutscheinValidieren();
-
                 });
 
             GutscheinErstellenClickedCmd = new RelayCommand(
                 () =>
                 {
                     GutscheinErstellen();
-
                 });
 
             if (!IsInDesignMode)
             {
                 GetKunden();
                 GetFilme();
-                ViewLebensmittel();
+                GetMitarbeiter();
+                GetLebensmittel();
+                
             }
+        }
+
+        private void GetMitarbeiter()
+        {
+            DbConnection.Open();
+
+            try
+            {
+                Kunden.Clear();
+
+                DbConnection.Open();
+                OracleCommand cmd = new OracleCommand("p_view_mitarbeiter", DbConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();
+
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    if (!values[2].Equals("KeinKunde"))
+                    {
+                        Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
+                        Kunden.Add(tmp);
+                    }
+                }
+
+                DbConnection.Close();
+                Kunden = new ObservableCollection<Kunde>(Kunden.OrderBy(i => i.ID));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
         }
 
         private void GutscheinErstellen()
@@ -223,7 +257,6 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             {
                 MessageBox.Show(e.Message);
             }
-
         }
 
         private void GutscheinValidieren()
@@ -335,7 +368,7 @@ namespace PROJEKTionsKino_Frontend.ViewModel
             }
         }
 
-        public void ViewLebensmittel()
+        public void GetLebensmittel()
         {
             try
             {
@@ -411,8 +444,11 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                     //ID, Vorname, Nachname, Straﬂe, Hausnummer, Postleitzahl, Ort, Geburtsdatum, Erstelldatum
                     values = new object[reader.FieldCount];
                     reader.GetValues(values);
-                    Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
-                    Kunden.Add(tmp);
+                    if (!values[2].Equals("KeinKunde"))
+                    {
+                        Kunde tmp = new Kunde(Convert.ToInt32(values[0]), (string)values[1], (string)values[2], (string)values[3], Convert.ToInt32(values[4]), Convert.ToInt32(values[5]), (string)values[6], (DateTime)values[7], (DateTime)values[8]);
+                        Kunden.Add(tmp);
+                    }
                 }
 
                 DbConnection.Close();
@@ -428,64 +464,64 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             try
             {
-            DbConnection.Open();
-            OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                DbConnection.Open();
+                OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-            OracleDataReader reader = cmd.ExecuteReader();
-            object[] values;
-            while (reader.Read())
-            {
-                values = new object[reader.FieldCount];
-                reader.GetValues(values);
-                bool exists = false;
-                foreach (var film in Filme)
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
                 {
-                    if (film.FilmID == Convert.ToInt32(values[9]))
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    bool exists = false;
+                    foreach (var film in Filme)
                     {
-                        exists = true;
+                        if (film.FilmID == Convert.ToInt32(values[9]))
+                        {
+                            exists = true;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
+                        //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
+                        Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
+                            Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
+                            Convert.ToInt32(values[12]), (string)values[2],
+                            (string)values[6], (string)values[7], (string)values[8]);
+                        Filme.Add(tmp);
+                        vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
+                        Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
+                        vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                    }
+                    else
+                    {
+                        Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
+                        vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                    }
+
+                    bool saalExists = false;
+                    foreach (var saal in Saale)
+                    {
+                        if (saal.SaalID == Convert.ToInt32(values[14]))
+                        {
+                            saalExists = true;
+                        }
+                    }
+
+                    if (!saalExists)
+                    {
+                        Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
                     }
                 }
 
-                if (!exists)
-                {
-                    //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
-                    //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
-                    Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
-                        Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
-                        Convert.ToInt32(values[12]), (string)values[2],
-                        (string)values[6], (string)values[7], (string)values[8]);
-                    Filme.Add(tmp);
-                    vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
-                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
-                }
-                else
-                {
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
-                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
-                }
-
-                bool saalExists = false;
-                foreach (var saal in Saale)
-                {
-                    if (saal.SaalID == Convert.ToInt32(values[14]))
-                    {
-                        saalExists = true;
-                    }
-                }
-
-                if (!saalExists)
-                {
-                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
-                }
-            }
-
-            DbConnection.Close();
-            Filme = new ObservableCollection<Film>(Filme.OrderBy(i => i.FilmID));
+                DbConnection.Close();
+                Filme = new ObservableCollection<Film>(Filme.OrderBy(i => i.FilmID));
             }
             catch (Exception e)
             {
