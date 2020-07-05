@@ -372,7 +372,9 @@ namespace PROJEKTionsKino_Frontend.ViewModel
                 DbConnection.Open();
                 OracleCommand createGutscheinCmd = new OracleCommand("p_gutschein", DbConnection);
                 createGutscheinCmd.CommandType = CommandType.StoredProcedure;
-                createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = rando.Next(10000000, 99999999);
+                int GutscheinCode = rando.Next(10000000, 99999999);
+                MessageBox.Show("Ihr Gutscheincode lautet: " + GutscheinCode);
+                createGutscheinCmd.Parameters.Add("i_id_in", OracleDbType.Int32).Value = GutscheinCode;
                 createGutscheinCmd.Parameters.Add("i_betrag_in", OracleDbType.Int32).Value = GutscheinBetrag;
 
                 createGutscheinCmd.ExecuteNonQuery();
