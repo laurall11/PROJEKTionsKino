@@ -13,7 +13,7 @@
     <Grid>
         <TabControl>
             <TabItem>
-                <TabItem.Header>Kunde anlegen</TabItem.Header>
+                <TabItem.Header>Kunden anlegen</TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -44,9 +44,20 @@
                             <TextBox Height="20" Margin="3" Text="{Binding PLZ}" Width="140"/>
                         </StackPanel>
                         <DatePicker Margin="3" Text="{Binding Geburtstag}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" Margin="0,75,0,0">
                         <Button Content="Kunden hinzufügen" Background="CornflowerBlue" Foreground="White" FontSize="12" Width="150" Height="30" Command="{Binding AddCustomerClickedCmd}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Kundenstatistiken anzeigen" FontWeight="Bold"/>
+                        <Label Content="*Bitte wählen Sie einen Kunden aus und drücken Sie den Button" FontStyle="Italic"/>
+                        <Button Content="Kundenstatistiken" Width="150" Height="30" Background="CornflowerBlue" Foreground="White" Command="{Binding KundenstatsBtnClickedCmd}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <Label Content="Anzahl geschauter Filme:"/>
+                            <TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding AnzahlFilme}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Gesamt geschaute Filmzeit:"/>
+                            <TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding ZeitGes}"/>
+                        </StackPanel>
                     </StackPanel>
                     <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kunden}" AutoGenerateColumns="True" ColumnWidth="*"/>
                 </Grid>

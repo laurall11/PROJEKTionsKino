@@ -149,6 +149,30 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
         #endregion
 
+        #region Kundenstats
+
+        public RelayCommand KundenstatsBtnClickedCmd { get; set; }
+
+        private int anzahlFilme;
+
+        public int AnzahlFilme
+        {
+            get { return anzahlFilme; }
+            set { anzahlFilme = value; RaisePropertyChanged(); }
+        }
+
+        private int zeitGes;
+
+        public int ZeitGes
+        {
+            get { return zeitGes; }
+            set { zeitGes = value; RaisePropertyChanged(); }
+        }
+
+        public Kunde SelectedKunde { get; set; }
+
+        #endregion
+
         public MainViewModel()
         {
             Kunden = new ObservableCollection<Kunde>();
@@ -196,11 +220,79 @@ namespace PROJEKTionsKino_Frontend.ViewModel
 
                 });
 
+            KundenstatsBtnClickedCmd = new RelayCommand(
+                () =>
+                {
+                    GetAnzahlFilme();
+                    GetGesamtZeit();
+
+                });
+
             if (!IsInDesignMode)
             {
                 GetKunden();
                 GetFilme();
                 ViewLebensmittel();
+            }
+        }
+
+        private void GetGesamtZeit()
+        {
+            try
+            {
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = "SELECT f_total_view_time(7) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    ZeitGes = Convert.ToInt32(values[0]);
+                }
+
+                DbConnection.Close();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        private void GetAnzahlFilme()
+        {
+            try
+            {
+                DbConnection.Open();
+                OracleCommand KundenStatsCmd = new OracleCommand();
+                KundenStatsCmd.Connection = DbConnection;
+                KundenStatsCmd.CommandType = CommandType.Text;
+                KundenStatsCmd.CommandText = "SELECT f_movie_viewings(5) FROM DUAL";
+                KundenStatsCmd.Parameters.Add("i_result_ou", OracleDbType.Int32).Direction = ParameterDirection.ReturnValue;
+                KundenStatsCmd.ExecuteNonQuery();
+
+                OracleDataReader reader = KundenStatsCmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
+                {
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    AnzahlFilme = Convert.ToInt32(values[0]);
+                }
+
+                DbConnection.Close();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 
@@ -428,64 +520,64 @@ namespace PROJEKTionsKino_Frontend.ViewModel
         {
             try
             {
-            DbConnection.Open();
-            OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                DbConnection.Open();
+                OracleCommand cmd = new OracleCommand("p_view_programmdetails", DbConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("result_cur_ou", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-            OracleDataReader reader = cmd.ExecuteReader();
-            object[] values;
-            while (reader.Read())
-            {
-                values = new object[reader.FieldCount];
-                reader.GetValues(values);
-                bool exists = false;
-                foreach (var film in Filme)
+                OracleDataReader reader = cmd.ExecuteReader();
+                object[] values;
+                while (reader.Read())
                 {
-                    if (film.FilmID == Convert.ToInt32(values[9]))
+                    values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    bool exists = false;
+                    foreach (var film in Filme)
                     {
-                        exists = true;
+                        if (film.FilmID == Convert.ToInt32(values[9]))
+                        {
+                            exists = true;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
+                        //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
+                        Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
+                            Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
+                            Convert.ToInt32(values[12]), (string)values[2],
+                            (string)values[6], (string)values[7], (string)values[8]);
+                        Filme.Add(tmp);
+                        vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
+                        Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
+                        vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                    }
+                    else
+                    {
+                        Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
+                        vDict[Convert.ToInt32(values[9])].Add(tmp2);
+                    }
+
+                    bool saalExists = false;
+                    foreach (var saal in Saale)
+                    {
+                        if (saal.SaalID == Convert.ToInt32(values[14]))
+                        {
+                            saalExists = true;
+                        }
+                    }
+
+                    if (!saalExists)
+                    {
+                        Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
                     }
                 }
 
-                if (!exists)
-                {
-                    //progammbeginn, programmende, filmname, dauer, altersfreigabe, sitzplatzanzahl, beschreibung, genre
-                    //regie, filmid, erscheinungsjahr, ratinganzahl, ratingsterne, saalid, programmid
-                    Film tmp = new Film(Convert.ToInt32(values[9]), Convert.ToInt32(values[3]),
-                        Convert.ToInt32(values[4]), Convert.ToInt32(values[10]), Convert.ToInt32(values[11]),
-                        Convert.ToInt32(values[12]), (string)values[2],
-                        (string)values[6], (string)values[7], (string)values[8]);
-                    Filme.Add(tmp);
-                    vDict[Convert.ToInt32(values[9])] = new ObservableCollection<Vorstellung>();
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
-                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
-                }
-                else
-                {
-                    Vorstellung tmp2 = new Vorstellung((DateTime)values[0], (DateTime)values[1], (string)values[2], (string)values[6], Convert.ToInt32(values[13]), Convert.ToInt32(values[5]), Convert.ToInt32(values[15]));
-                    vDict[Convert.ToInt32(values[9])].Add(tmp2);
-                }
-
-                bool saalExists = false;
-                foreach (var saal in Saale)
-                {
-                    if (saal.SaalID == Convert.ToInt32(values[14]))
-                    {
-                        saalExists = true;
-                    }
-                }
-
-                if (!saalExists)
-                {
-                    Saale.Add(new Saal(Convert.ToInt32(values[14]), Convert.ToInt32(values[5])));
-                }
-            }
-
-            DbConnection.Close();
-            Filme = new ObservableCollection<Film>(Filme.OrderBy(i => i.FilmID));
+                DbConnection.Close();
+                Filme = new ObservableCollection<Film>(Filme.OrderBy(i => i.FilmID));
             }
             catch (Exception e)
             {
